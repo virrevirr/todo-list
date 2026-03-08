@@ -23,7 +23,9 @@ export default function LoginForm() {
 
     if (error) {
       setError(error.message)
+      console.log('Supabase error:', error)
     } else {
+      console.log('No error, redirecting...')
       router.push('/dashboard')
     }
   }
@@ -60,7 +62,7 @@ export default function LoginForm() {
         />
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
       <button
         type="submit"
