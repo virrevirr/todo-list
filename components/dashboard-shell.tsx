@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Sidebar from '@/components/sidebar'
 import TodoView from '@/components/todo-view'
 import Logo from '@/components/logo'
-import LogoutButton from '@/components/logout-button'
 import type { List } from '@/lib/types'
 
 type Props = {
@@ -55,7 +54,7 @@ export default function DashboardShell({ initialLists }: Props) {
           <div className="absolute left-1/2 -translate-x-1/2 scale-80">
             <Logo />
           </div>
-          <LogoutButton />
+          <div />
         </header>
 
         <main className="flex-1 overflow-hidden">

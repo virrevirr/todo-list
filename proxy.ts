@@ -30,7 +30,7 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (user && (pathname === '/login' || pathname === '/signup')) {
+  if (user && (pathname === '/' || pathname === '/login' || pathname === '/signup')) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
@@ -38,7 +38,9 @@ export async function proxy(request: NextRequest) {
     if (pathname.startsWith('/api/')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    return NextResponse.redirect(new URL('/login', request.url))
+    if (pathname.startsWith('/dashboard') || pathname.startsWith('/profile')) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
   }
 
   return response
@@ -46,6 +48,9 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    '/',
+    '/login',
+    '/signup',
     '/dashboard/:path*',
     '/profile/:path*',
     '/api/todos/:path*',
