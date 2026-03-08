@@ -17,13 +17,7 @@ export default function SignupForm() {
     setLoading(true)
 
     const supabase = createClient()
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
+    const { data, error } = await supabase.auth.signUp({ email, password })
 
     setLoading(false)
 
@@ -33,7 +27,7 @@ export default function SignupForm() {
       // Email confirmation disabled — session returned immediately
       router.push('/dashboard')
     } else {
-      router.push('/confirm-email')
+      setError('Check your email to confirm your account.')
     }
   }
 
