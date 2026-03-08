@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
 
   const { data: todo, error } = await supabase
     .from('todos')
-    .insert({ title: title.trim(), list_id, user_id: user.id })
+    .insert({ title: title.trim(), list_id })
     .select()
     .single()
 

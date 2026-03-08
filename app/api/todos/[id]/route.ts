@@ -19,15 +19,25 @@ export async function PATCH(
     return NextResponse.json({ error: 'completed must be a boolean' }, { status: 400 })
   }
 
-  // Verify the todo belongs to the authenticated user via list ownership
+  // Verify the todo exists and belongs to the user via list ownership
   const { data: existing } = await supabase
     .from('todos')
     .select('id, list_id')
     .eq('id', id)
-    .eq('user_id', user.id)
     .single()
 
   if (!existing) {
+    return NextResponse.json({ error: 'Todo not found' }, { status: 404 })
+  }
+
+  const { data: list } = await supabase
+    .from('lists')
+    .select('id')
+    .eq('id', existing.list_id)
+    .eq('user_id', user.id)
+    .single()
+
+  if (!list) {
     return NextResponse.json({ error: 'Todo not found' }, { status: 404 })
   }
 
@@ -35,7 +45,6 @@ export async function PATCH(
     .from('todos')
     .update({ completed })
     .eq('id', id)
-    .eq('user_id', user.id)
     .select()
     .single()
 
