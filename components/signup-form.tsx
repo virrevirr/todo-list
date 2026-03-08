@@ -1,13 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 
 export default function SignupForm() {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
@@ -16,23 +17,19 @@ export default function SignupForm() {
     setLoading(true)
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({ email, password })
 
     setLoading(false)
 
     if (error) {
       setError(error.message)
+    } else if (data.session) {
+      // Email confirmation disabled — session returned immediately
+      router.push('/dashboard')
     } else {
-      setSuccess(true)
+      // Email confirmation enabled — ask user to check email
+      setError('Check your email to confirm your account.')
     }
-  }
-
-  if (success) {
-    return (
-      <p className="text-center text-zinc-600">
-        Check your email to confirm your account.
-      </p>
-    )
   }
 
   return (

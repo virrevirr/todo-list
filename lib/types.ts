@@ -1,7 +1,7 @@
 export type List = {
   id: string
   user_id: string
-  name: string
+  title: string
   created_at: string
 }
 
