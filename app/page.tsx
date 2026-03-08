@@ -1,25 +1,32 @@
 import Navbar from '@/components/navbar'
+import Image from 'next/image'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="relative min-h-screen bg-white overflow-hidden">
       <Navbar />
-      <main className="px-8 pt-24 max-w-2xl">
-        <h1 className="text-4xl font-bold text-zinc-900 leading-snug mb-6">
-          You've got 47 tabs open, three half-finished projects, and a grocery
-          list written on a receipt you definitely lost. Let's fix that.
+      <main className="px-30 pt-24 max-w-2xl">
+        <h1 className="text-6xl font-bold text-zinc-900 leading-snug mb-6">
+          One place for everything you need to get done.
         </h1>
         <p className="text-lg text-zinc-500 leading-relaxed mb-10">
-          A simple, clean to-do app to keep track of everything that matters.
-          Create lists, add tasks, and check them off as you go.
+          ToDo keeps all your tasks in one place. Create lists, add tasks, and check them off as you go.
         </p>
         <a
           href="/signup"
-          className="inline-block px-6 py-3 text-sm font-semibold text-white bg-zinc-900 rounded-full hover:bg-zinc-700 transition-colors"
+          className="inline-block px-12 py-4 text-base font-semibold text-white bg-coral rounded-full hover:bg-coral/85 transition-colors"
         >
           Get started for free
         </a>
       </main>
+      <Image
+        src="/flowy-lines.svg"
+        alt=""
+        width={1000}
+        height={500}
+        className="absolute bottom-0 right-0 pointer-events-none select-none"
+        priority
+      />
     </div>
   )
 }

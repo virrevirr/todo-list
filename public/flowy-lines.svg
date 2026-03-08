@@ -1,0 +1,68 @@
+<svg width="" height="" viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Turquoise -->
+    <linearGradient id="turqCute" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5eead4"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+
+    <!-- More orange coral -->
+    <linearGradient id="coralOrange" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffb199"/>
+      <stop offset="50%" stop-color="#ff8a66"/>
+      <stop offset="100%" stop-color="#ff6a3d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Turquoise main curve -->
+  <path
+    d="M120 520
+       C220 430, 300 430, 380 370
+       S560 270, 700 230
+       S860 210, 940 190"
+    stroke="url(#turqCute)"
+    stroke-width="26"
+    stroke-linecap="round"
+    fill="none"
+    opacity="0.9"
+  />
+
+  <!-- Turquoise accent -->
+  <path
+    d="M40 520
+       C160 450, 260 430, 340 390
+       S520 310, 660 270
+       S840 250, 940 230"
+    stroke="url(#turqCute)"
+    stroke-width="12"
+    stroke-linecap="round"
+    fill="none"
+    opacity="0.55"
+  />
+
+  <!-- Orange coral main curve -->
+  <path
+    d="M240 520
+       C320 450, 420 430, 500 370
+       S660 310, 780 290
+       S900 270, 960 250"
+    stroke="url(#coralOrange)"
+    stroke-width="26"
+    stroke-linecap="round"
+    fill="none"
+    opacity="0.95"
+  />
+
+  <!-- Orange coral accent -->
+  <path
+    d="M0 500
+       C140 430, 260 410, 360 370
+       S560 310, 700 290
+       S880 280, 940 270"
+    stroke="url(#coralOrange)"
+    stroke-width="12"
+    stroke-linecap="round"
+    fill="none"
+    opacity="0.6"
+  />
+</svg>
