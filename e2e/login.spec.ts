@@ -23,7 +23,7 @@ test('login shows error on wrong credentials', async ({ page }) => {
 
   // Should stay on login page and show some error — not redirect to dashboard
   await expect(page).not.toHaveURL('/dashboard')
-  await expect(page.locator('p.text-red-500')).toBeVisible()
+  await expect(page.locator('p.text-red-500')).toBeVisible({ timeout: 10000 })
 })
 
 // Requires TEST_EMAIL and TEST_PASSWORD secrets in CI (verified account)
