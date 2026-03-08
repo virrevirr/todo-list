@@ -57,7 +57,9 @@ export default function DashboardShell({ initialLists }: Props) {
           <div />
         </header>
 
-        <main className="flex-1 overflow-hidden">
+        <main
+          className="relative flex-1 overflow-hidden bg-zinc-50"
+        >
           {selectedList ? (
             <TodoView key={selectedList.id} list={selectedList} />
           ) : (

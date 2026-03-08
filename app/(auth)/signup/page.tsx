@@ -4,8 +4,8 @@ import Link from 'next/link'
 
 export default function SignupPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center bg-white px-4">
-      <Link href="/" className="mt-3 mb-16 scale-80">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 gap-2">
+      <Link href="/" className="scale-80">
         <Logo />
       </Link>
 

@@ -4,27 +4,49 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 
+const lettersOnly = /^[a-zA-ZÀ-ÖØ-öø-ÿ\s'-]+$/
+
 export default function SignupForm() {
   const router = useRouter()
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
+  function handleName(value: string, setter: (v: string) => void) {
+    if (value === '' || lettersOnly.test(value)) setter(value)
+  }
+
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
-    setLoading(true)
 
+    if (!lettersOnly.test(firstName)) return setError('First name must contain only letters.')
+    if (!lettersOnly.test(lastName)) return setError('Last name must contain only letters.')
+
+    setLoading(true)
     const supabase = createClient()
     const { data, error } = await supabase.auth.signUp({ email, password })
 
+    if (error) {
+      setLoading(false)
+      setError(error.message)
+      return
+    }
+
+    if (data.user) {
+      await supabase.from('profiles').upsert({
+        id: data.user.id,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+      })
+    }
+
     setLoading(false)
 
-    if (error) {
-      setError(error.message)
-    } else if (data.session) {
-      // Email confirmation disabled — session returned immediately
+    if (data.session) {
       router.push('/dashboard')
     } else {
       setError('Check your email to confirm your account.')
@@ -33,6 +55,35 @@ export default function SignupForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
+        <label htmlFor="firstName" className="text-sm font-semibold text-zinc-600">
+          First name
+        </label>
+        <input
+          id="firstName"
+          type="text"
+          required
+          value={firstName}
+          onChange={e => handleName(e.target.value, setFirstName)}
+          className="px-4 py-3 rounded-xl border border-zinc-200 text-zinc-700 text-base focus:outline-none focus:ring-2 focus:ring-turquoise"
+          placeholder="Astrid"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="lastName" className="text-sm font-semibold text-zinc-600">
+          Last name
+        </label>
+        <input
+          id="lastName"
+          type="text"
+          required
+          value={lastName}
+          onChange={e => handleName(e.target.value, setLastName)}
+          className="px-4 py-3 rounded-xl border border-zinc-200 text-zinc-700 text-base focus:outline-none focus:ring-2 focus:ring-turquoise"
+          placeholder="Lindqvist"
+        />
+      </div>
+
       <div className="flex flex-col gap-1">
         <label htmlFor="email" className="text-sm font-semibold text-zinc-600">
           Email
