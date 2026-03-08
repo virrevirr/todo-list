@@ -32,15 +32,10 @@ test('signup shows error on short password', async ({ page }) => {
   await expect(page).toHaveURL('/signup')
 })
 
-// Requires TEST_EMAIL and TEST_PASSWORD secrets in CI
 test('signup succeeds with valid credentials', async ({ page }) => {
-  const email = process.env.TEST_EMAIL
-  const password = process.env.TEST_PASSWORD
-
-  if (!email || !password) {
-    test.skip()
-    return
-  }
+  // Use a unique email each run so we never hit "user already exists"
+  const email = `test+${Date.now()}@example.com`
+  const password = 'testpassword123'
 
   await page.getByLabel('Email').fill(email)
   await page.getByLabel('Password').fill(password)
