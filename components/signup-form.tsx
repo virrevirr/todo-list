@@ -17,7 +17,13 @@ export default function SignupForm() {
     setLoading(true)
 
     const supabase = createClient()
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
 
     setLoading(false)
 
