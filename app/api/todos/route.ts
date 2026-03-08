@@ -41,3 +41,41 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json(todos)
 }
+
+export async function POST(request: NextRequest) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { title, list_id } = await request.json()
+
+  if (!title || !list_id) {
+    return NextResponse.json({ error: 'title and list_id are required' }, { status: 400 })
+  }
+
+  const { data: list } = await supabase
+    .from('lists')
+    .select('id')
+    .eq('id', list_id)
+    .eq('user_id', user.id)
+    .single()
+
+  if (!list) {
+    return NextResponse.json({ error: 'List not found' }, { status: 404 })
+  }
+
+  const { data: todo, error } = await supabase
+    .from('todos')
+    .insert({ title: title.trim(), list_id, user_id: user.id })
+    .select()
+    .single()
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json(todo, { status: 201 })
+}

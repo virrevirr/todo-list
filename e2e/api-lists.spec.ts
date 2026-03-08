@@ -78,3 +78,65 @@ test('GET /api/todos returns 400 without list_id', async ({ page }) => {
   const res = await page.request.get('/api/todos')
   expect(res.status()).toBe(400)
 })
+
+test('POST /api/todos creates a todo in a list', async ({ page }) => {
+  const email = process.env.TEST_EMAIL
+  const password = process.env.TEST_PASSWORD
+
+  if (!email || !password) {
+    test.skip()
+    return
+  }
+
+  await page.goto('/login')
+  await page.getByLabel('Email').fill(email)
+  await page.getByLabel('Password').fill(password)
+  await page.getByRole('button', { name: /log in/i }).click()
+  await expect(page).toHaveURL('/dashboard')
+
+  const listsRes = await page.request.get('/api/lists')
+  const lists = await listsRes.json()
+  const listId = lists[0].id
+
+  const res = await page.request.post('/api/todos', {
+    data: { title: 'Test todo', list_id: listId },
+  })
+  expect(res.status()).toBe(201)
+
+  const todo = await res.json()
+  expect(todo.title).toBe('Test todo')
+  expect(todo.completed).toBe(false)
+})
+
+test('PATCH /api/todos/:id toggles completion status', async ({ page }) => {
+  const email = process.env.TEST_EMAIL
+  const password = process.env.TEST_PASSWORD
+
+  if (!email || !password) {
+    test.skip()
+    return
+  }
+
+  await page.goto('/login')
+  await page.getByLabel('Email').fill(email)
+  await page.getByLabel('Password').fill(password)
+  await page.getByRole('button', { name: /log in/i }).click()
+  await expect(page).toHaveURL('/dashboard')
+
+  const listsRes = await page.request.get('/api/lists')
+  const lists = await listsRes.json()
+  const listId = lists[0].id
+
+  const createRes = await page.request.post('/api/todos', {
+    data: { title: 'Toggle me', list_id: listId },
+  })
+  const created = await createRes.json()
+
+  const res = await page.request.patch(`/api/todos/${created.id}`, {
+    data: { completed: true },
+  })
+  expect(res.status()).toBe(200)
+
+  const updated = await res.json()
+  expect(updated.completed).toBe(true)
+})
