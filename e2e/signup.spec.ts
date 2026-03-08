@@ -41,5 +41,6 @@ test('signup succeeds with valid credentials', async ({ page }) => {
   await page.getByLabel('Password').fill(password)
   await page.getByRole('button', { name: /create account/i }).click()
 
-  await expect(page.getByText(/check your email/i)).toBeVisible()
+  // Email confirmation is disabled — should redirect straight to dashboard
+  await expect(page).toHaveURL('/dashboard')
 })
