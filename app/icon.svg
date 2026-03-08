@@ -1,27 +1,11 @@
-<svg width="300" height="300" viewBox="7 7 114 114" xmlns="http://www.w3.org/2000/svg">
-  
-  <!-- background -->
-  <rect x="8" y="8" width="112" height="112" rx="24" fill="#40E0D0"/>
+<svg width="52" height="54" viewBox="124 32 52 54" xmlns="http://www.w3.org/2000/svg">
 
-  <!-- paper -->
-  <rect x="28" y="24" width="72" height="81" rx="12" fill="white"/>
-
-  <!-- header -->
-  <rect x="28" y="24" width="72" height="18" rx="12" fill="#FF6F61"/>
-
-  <!-- checkboxes -->
-  <rect x="36" y="51" width="12" height="12" rx="2" fill="#FF6F61"/>
-  <rect x="36" y="69" width="12" height="12" rx="2" fill="#FF6F61"/>
-  <rect x="36" y="87" width="12" height="12" rx="2" fill="#FF6F61"/>
-
-  <!-- checkmarks -->
-  <path d="M38 57 L41 60 L46 53" stroke="white" stroke-width="2" fill="none"/>
-  <path d="M38 75 L41 78 L46 71" stroke="white" stroke-width="2" fill="none"/>
-  <path d="M38 93 L41 96 L46 89" stroke="white" stroke-width="2" fill="none"/>
-
-  <!-- list lines -->
-  <rect x="54" y="54" width="32" height="4" rx="2" fill="#40E0D0"/>
-  <rect x="54" y="72" width="32" height="4" rx="2" fill="#40E0D0"/>
-  <rect x="54" y="90" width="32" height="4" rx="2" fill="#40E0D0"/>
+  <circle cx="150" cy="60" r="19" stroke="#40E0D0" stroke-width="6" fill="none"/>
+  <path d="M138 59 L148 70 L164 39"
+        stroke="#FF6F61"
+        stroke-width="6"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
 
 </svg>
