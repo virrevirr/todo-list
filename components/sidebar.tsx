@@ -69,7 +69,10 @@ export default function Sidebar({ initialLists, selectedId, onSelect, isOpen }: 
               autoFocus
               type="text"
               value={newName}
-              onChange={e => setNewName(e.target.value)}
+              onChange={e => {
+                const val = e.target.value
+                setNewName(val.length === 1 ? val.toUpperCase() : val)
+              }}
               onKeyDown={e => e.key === 'Escape' && (setCreating(false), setNewName(''))}
               placeholder="List name"
               className="w-51 px-3 py-1.5 text-base rounded-lg border border-zinc-200 text-zinc-700 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-turquoise"
