@@ -6,7 +6,12 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        coral: '#FF7F50',
+        turquoise: '#40E0D0',
+      },
+    },
   },
   plugins: [],
 };

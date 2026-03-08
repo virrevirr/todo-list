@@ -1,16 +1,16 @@
-import Image from 'next/image'
 import Link from 'next/link'
+import Logo from '@/components/logo'
 
 export default function Navbar() {
   return (
-    <nav className="flex items-center justify-between px-30 py-2 border-b border-zinc-1000">
+    <nav className="flex items-center justify-between px-30 py-2 border-b border-zinc-200">
       <Link href="/">
-        <Image src="/todo.svg" alt="ToDo logo" width={50} height={20} priority />
+        <Logo />
       </Link>
       <div className="flex items-center gap-3">
         <Link
           href="/login"
-          className="px-12 py-4 text-base font-semibold text-zinc-500 hover:zinc-900 transition-colors"
+          className="px-12 py-4 text-base font-semibold text-zinc-500 hover:text-zinc-900 transition-colors"
         >
           Log in
         </Link>
