@@ -15,10 +15,5 @@ export default async function DashboardPage() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: true })
 
-  return (
-    <DashboardShell
-      initialLists={(lists ?? []) as List[]}
-      email={user.email!}
-    />
-  )
+  return <DashboardShell initialLists={(lists ?? []) as List[]} />
 }

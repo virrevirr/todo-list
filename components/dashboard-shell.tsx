@@ -2,14 +2,15 @@
 
 import { useState } from 'react'
 import Sidebar from '@/components/sidebar'
+import TodoView from '@/components/todo-view'
+import Logo from '@/components/logo'
 import type { List } from '@/lib/types'
 
 type Props = {
   initialLists: List[]
-  email: string
 }
 
-export default function DashboardShell({ initialLists, email }: Props) {
+export default function DashboardShell({ initialLists }: Props) {
   const [selectedList, setSelectedList] = useState<List | null>(initialLists[0] ?? null)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
@@ -40,27 +41,31 @@ export default function DashboardShell({ initialLists, email }: Props) {
 
       {/* Main content */}
       <div className="flex flex-col flex-1 min-w-0">
-        <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 shrink-0">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setDrawerOpen(true)}
-              className="text-zinc-400 hover:text-zinc-600 transition-colors"
-              aria-label="Open sidebar"
-            >
-              ☰
-            </button>
-            <h1 className="text-lg font-bold text-zinc-700">
-              {selectedList ? selectedList.title : 'Select a list'}
-            </h1>
+        <header className="relative flex items-center justify-between px-6 py-4 border-b border-zinc-200 shrink-0">
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="text-zinc-400 hover:text-zinc-600 transition-colors"
+            aria-label="Open sidebar"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+          <div className="absolute left-1/2 -translate-x-1/2 scale-80">
+            <Logo />
           </div>
-          <span className="text-sm text-zinc-400">{email}</span>
+          <div />
         </header>
 
-        <main className="flex-1 overflow-y-auto px-6 py-8">
+        <main className="flex-1 overflow-hidden">
           {selectedList ? (
-            <p className="text-zinc-400 text-sm">Todos for "{selectedList.title}" will appear here.</p>
+            <TodoView key={selectedList.id} list={selectedList} />
           ) : (
-            <p className="text-zinc-400 text-sm">Create a list to get started.</p>
+            <div className="flex flex-col items-center justify-center h-full gap-4 text-center px-6">
+              <div className="text-5xl">✨</div>
+              <h3 className="text-2xl font-bold text-zinc-800">Nothing here yet!</h3>
+              <p className="text-zinc-400 text-sm max-w-xs">Open the menu and create your first list to start getting things done.</p>
+            </div>
           )}
         </main>
       </div>

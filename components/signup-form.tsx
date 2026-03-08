@@ -27,7 +27,6 @@ export default function SignupForm() {
       // Email confirmation disabled — session returned immediately
       router.push('/dashboard')
     } else {
-      // Email confirmation enabled — ask user to check email
       setError('Check your email to confirm your account.')
     }
   }
