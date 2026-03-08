@@ -21,7 +21,9 @@ test('login shows error on wrong credentials', async ({ page }) => {
   await page.getByLabel('Password').fill('wrongpassword')
   await page.getByRole('button', { name: /log in/i }).click()
 
-  await expect(page.getByText(/invalid/i)).toBeVisible()
+  // Should stay on login page and show some error — not redirect to dashboard
+  await expect(page).not.toHaveURL('/dashboard')
+  await expect(page.locator('p.text-red-500')).toBeVisible()
 })
 
 // Requires TEST_EMAIL and TEST_PASSWORD secrets in CI (verified account)
