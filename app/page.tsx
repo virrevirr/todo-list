@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 export default function Home() {
   return (
-    <div className="relative h-screen bg-white overflow-hidden">
+    <div className="relative min-h-screen bg-white overflow-x-hidden">
       <Navbar />
 
       {/* Mobile layout */}
