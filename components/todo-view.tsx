@@ -109,28 +109,36 @@ export default function TodoView({ list, initialTodos }: Props) {
     e.preventDefault()
     if (!newTitle.trim() || adding) return
     setAdding(true)
+
+    const tempId = `temp-${Date.now()}`
+    const optimistic: Todo = { id: tempId, list_id: list.id, title: newTitle.trim(), completed: false, created_at: new Date().toISOString() }
+    setTodos(prev => [...prev, optimistic])
+    setNewTitle('')
+
     const res = await fetch('/api/todos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: newTitle.trim(), list_id: list.id }),
+      body: JSON.stringify({ title: optimistic.title, list_id: list.id }),
     })
     if (res.ok) {
       const created: Todo = await res.json()
-      setTodos(prev => [...prev, created])
-      setNewTitle('')
+      setTodos(prev => prev.map(t => t.id === tempId ? created : t))
+    } else {
+      setTodos(prev => prev.filter(t => t.id !== tempId))
     }
     setAdding(false)
   }
 
   async function handleToggle(todo: Todo) {
+    setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: !t.completed } : t))
+
     const res = await fetch(`/api/todos/${todo.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ completed: !todo.completed }),
     })
-    if (res.ok) {
-      const updated: Todo = await res.json()
-      setTodos(prev => prev.map(t => t.id === updated.id ? updated : t))
+    if (!res.ok) {
+      setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: todo.completed } : t))
     }
   }
 
@@ -138,20 +146,27 @@ export default function TodoView({ list, initialTodos }: Props) {
     const trimmed = editingTitle.trim()
     setEditingId(null)
     if (!trimmed || trimmed === todo.title) return
+
+    setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, title: trimmed } : t))
+
     const res = await fetch(`/api/todos/${todo.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title: trimmed }),
     })
-    if (res.ok) {
-      const updated: Todo = await res.json()
-      setTodos(prev => prev.map(t => t.id === updated.id ? updated : t))
+    if (!res.ok) {
+      setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, title: todo.title } : t))
     }
   }
 
   async function handleDelete(id: string) {
+    const deleted = todos.find(t => t.id === id)
+    setTodos(prev => prev.filter(t => t.id !== id))
+
     const res = await fetch(`/api/todos/${id}`, { method: 'DELETE' })
-    if (res.ok) setTodos(prev => prev.filter(t => t.id !== id))
+    if (!res.ok && deleted) {
+      setTodos(prev => [...prev, deleted])
+    }
   }
 
   const sorted = [...todos].sort((a, b) => Number(a.completed) - Number(b.completed))
@@ -178,7 +193,7 @@ export default function TodoView({ list, initialTodos }: Props) {
           <button
             type="submit"
             disabled={adding}
-            className="px-5 py-3 md:px-7 md:py-4 rounded-full bg-coral text-white font-semibold text-sm md:text-base hover:bg-coral/85 transition-colors shadow-sm shrink-0 disabled:opacity-50"
+            className="px-5 py-3 md:px-7 md:py-4 rounded-full bg-coral text-white font-semibold text-sm md:text-base hover:bg-coral/85 transition-colors shadow-sm shrink-0"
           >
             Add
           </button>

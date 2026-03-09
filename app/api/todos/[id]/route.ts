@@ -23,28 +23,6 @@ export async function PATCH(
     return NextResponse.json({ error: 'title must be a non-empty string' }, { status: 400 })
   }
 
-  // Verify the todo exists and belongs to the user via list ownership
-  const { data: existing } = await supabase
-    .from('todos')
-    .select('id, list_id')
-    .eq('id', id)
-    .single()
-
-  if (!existing) {
-    return NextResponse.json({ error: 'Todo not found' }, { status: 404 })
-  }
-
-  const { data: list } = await supabase
-    .from('lists')
-    .select('id')
-    .eq('id', existing.list_id)
-    .eq('user_id', user.id)
-    .single()
-
-  if (!list) {
-    return NextResponse.json({ error: 'Todo not found' }, { status: 404 })
-  }
-
   const updates: Record<string, unknown> = {}
   if (completed !== undefined) updates.completed = completed
   if (title !== undefined) updates.title = title.trim()
@@ -56,8 +34,8 @@ export async function PATCH(
     .select()
     .single()
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error || !todo) {
+    return NextResponse.json({ error: 'Todo not found' }, { status: 404 })
   }
 
   return NextResponse.json(todo)
@@ -75,27 +53,6 @@ export async function DELETE(
   }
 
   const { id } = await params
-
-  const { data: existing } = await supabase
-    .from('todos')
-    .select('id, list_id')
-    .eq('id', id)
-    .single()
-
-  if (!existing) {
-    return NextResponse.json({ error: 'Todo not found' }, { status: 404 })
-  }
-
-  const { data: list } = await supabase
-    .from('lists')
-    .select('id')
-    .eq('id', existing.list_id)
-    .eq('user_id', user.id)
-    .single()
-
-  if (!list) {
-    return NextResponse.json({ error: 'Todo not found' }, { status: 404 })
-  }
 
   await supabase.from('todos').delete().eq('id', id)
 

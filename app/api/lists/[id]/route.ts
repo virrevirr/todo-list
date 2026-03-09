@@ -15,7 +15,7 @@ export async function DELETE(
   const { id } = await params
 
   // Delete todos belonging to this list first
-  await supabase.from('todos').delete().eq('list_id', id).eq('user_id', user.id)
+  await supabase.from('todos').delete().eq('list_id', id)
 
   // Delete the list (RLS ensures the user can only delete their own)
   const { error } = await supabase
