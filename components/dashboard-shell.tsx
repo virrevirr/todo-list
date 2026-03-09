@@ -5,14 +5,15 @@ import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import TodoView from '@/components/todo-view'
 import Logo from '@/components/logo'
-import type { List } from '@/lib/types'
+import type { List, Todo } from '@/lib/types'
 
 type Props = {
   initialLists: List[]
+  initialTodosByList: Record<string, Todo[]>
   initials: string
 }
 
-export default function DashboardShell({ initialLists, initials }: Props) {
+export default function DashboardShell({ initialLists, initialTodosByList, initials }: Props) {
   const router = useRouter()
   const [selectedList, setSelectedList] = useState<List | null>(initialLists[0] ?? null)
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -70,7 +71,7 @@ export default function DashboardShell({ initialLists, initials }: Props) {
           className="relative flex-1 overflow-hidden bg-zinc-50"
         >
           {selectedList ? (
-            <TodoView key={selectedList.id} list={selectedList} />
+            <TodoView key={selectedList.id} list={selectedList} initialTodos={initialTodosByList[selectedList.id] ?? []} />
           ) : (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-center px-6">
               <div className="text-5xl">✨</div>

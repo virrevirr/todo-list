@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import DashboardShell from '@/components/dashboard-shell'
-import type { List } from '@/lib/types'
+import type { List, Todo } from '@/lib/types'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -15,6 +15,22 @@ export default async function DashboardPage() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: true })
 
+  const listIds = (lists ?? []).map(l => l.id)
+
+  const { data: todos } = listIds.length > 0
+    ? await supabase
+        .from('todos')
+        .select('*')
+        .in('list_id', listIds)
+        .order('created_at', { ascending: true })
+    : { data: [] }
+
+  const todosByList = (todos ?? []).reduce<Record<string, Todo[]>>((acc, todo) => {
+    if (!acc[todo.list_id]) acc[todo.list_id] = []
+    acc[todo.list_id].push(todo)
+    return acc
+  }, {})
+
   const { data: profile } = await supabase
     .from('profiles')
     .select('first_name, last_name')
@@ -26,5 +42,11 @@ export default async function DashboardPage() {
     .map(n => n![0].toUpperCase())
     .join('') || user.email![0].toUpperCase()
 
-  return <DashboardShell initialLists={(lists ?? []) as List[]} initials={initials} />
+  return (
+    <DashboardShell
+      initialLists={(lists ?? []) as List[]}
+      initialTodosByList={todosByList}
+      initials={initials}
+    />
+  )
 }

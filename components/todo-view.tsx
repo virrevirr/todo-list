@@ -1,23 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { List, Todo } from '@/lib/types'
 
 type Props = {
   list: List
+  initialTodos: Todo[]
 }
 
-export default function TodoView({ list }: Props) {
-  const [todos, setTodos] = useState<Todo[]>([])
+export default function TodoView({ list, initialTodos }: Props) {
+  const [todos, setTodos] = useState<Todo[]>(initialTodos)
   const [newTitle, setNewTitle] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState('')
-
-  useEffect(() => {
-    fetch(`/api/todos?list_id=${list.id}`)
-      .then(res => res.ok ? res.json() : [])
-      .then(data => { if (Array.isArray(data)) setTodos(data) })
-  }, [list.id])
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
