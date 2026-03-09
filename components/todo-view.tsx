@@ -65,7 +65,7 @@ export default function TodoView({ list, initialTodos }: Props) {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="w-full max-w-3xl mx-auto px-8 py-10 flex flex-col gap-6">
+      <div className="w-full max-w-3xl mx-auto px-4 md:px-8 py-6 md:py-10 flex flex-col gap-6">
 
         {/* Title */}
         <h2 className="text-4xl font-extrabold text-zinc-800 tracking-tight">{list.title}</h2>
@@ -80,11 +80,11 @@ export default function TodoView({ list, initialTodos }: Props) {
               setNewTitle(val.length === 1 ? val.toUpperCase() : val)
             }}
             placeholder="Add a new task..."
-            className="flex-1 px-6 py-4 rounded-full border border-zinc-200 bg-white text-base text-zinc-700 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-200 shadow-sm"
+            className="flex-1 min-w-0 px-5 py-3 md:px-6 md:py-4 rounded-full border border-zinc-200 bg-white text-sm md:text-base text-zinc-700 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-200 shadow-sm"
           />
           <button
             type="submit"
-            className="px-7 py-4 rounded-full bg-coral text-white font-semibold text-base hover:bg-coral/85 transition-colors shadow-sm shrink-0"
+            className="px-5 py-3 md:px-7 md:py-4 rounded-full bg-coral text-white font-semibold text-sm md:text-base hover:bg-coral/85 transition-colors shadow-sm shrink-0"
           >
             Add
           </button>
