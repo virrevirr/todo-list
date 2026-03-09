@@ -61,7 +61,7 @@ function SwipeableItem({ todo, onDelete, children }: {
     <div className="relative rounded-2xl overflow-hidden">
       {/* Delete background */}
       <div
-        className="absolute inset-y-0 right-0 flex items-center justify-center bg-red-500 rounded-2xl"
+        className="absolute inset-y-0 right-0 flex items-center justify-center bg-zinc-400 rounded-2xl"
         style={{ width: REVEAL_WIDTH }}
       >
         <button
