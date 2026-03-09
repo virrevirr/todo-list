@@ -8,13 +8,15 @@ type Props = {
   initialLists: List[]
   selectedId: string | null
   onSelect: (list: List | null) => void
+  onClose: () => void
   isOpen: boolean
 }
 
-export default function Sidebar({ initialLists, selectedId, onSelect, isOpen }: Props) {
+export default function Sidebar({ initialLists, selectedId, onSelect, onClose, isOpen }: Props) {
   const [lists, setLists] = useState<List[]>(initialLists)
   const [creating, setCreating] = useState(false)
   const [newName, setNewName] = useState('')
+  const [adding, setAdding] = useState(false)
 
   useEffect(() => {
     if (!isOpen) {
@@ -25,8 +27,9 @@ export default function Sidebar({ initialLists, selectedId, onSelect, isOpen }: 
 
   async function handleCreate(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (!newName.trim()) return
+    if (!newName.trim() || adding) return
 
+    setAdding(true)
     const res = await fetch('/api/lists', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -41,6 +44,7 @@ export default function Sidebar({ initialLists, selectedId, onSelect, isOpen }: 
 
     setNewName('')
     setCreating(false)
+    setAdding(false)
   }
 
   async function handleDelete(list: List) {
@@ -54,7 +58,7 @@ export default function Sidebar({ initialLists, selectedId, onSelect, isOpen }: 
 
   return (
     <aside className="flex flex-col h-full border-r border-zinc-200 bg-white w-80 shrink-0">
-      <div className="px-0 flex items-center" style={{ height: '68px' }}>
+      <div className="px-0 flex items-center justify-between" style={{ height: '68px' }}>
         {creating ? (
           <form onSubmit={handleCreate} className="flex gap-1 px-2 w-fit">
             <button
@@ -79,7 +83,8 @@ export default function Sidebar({ initialLists, selectedId, onSelect, isOpen }: 
             />
             <button
               type="submit"
-              className="text-base font-semibold text-white bg-coral px-2.5 py-1.5 rounded-lg hover:bg-coral/85 transition-colors"
+              disabled={adding}
+              className="text-base font-semibold text-white bg-coral px-2.5 py-1.5 rounded-lg hover:bg-coral/85 transition-colors disabled:opacity-50"
               style={{ marginLeft: '5px' }}
             >
               Add
@@ -87,15 +92,27 @@ export default function Sidebar({ initialLists, selectedId, onSelect, isOpen }: 
         
           </form>
         ) : (
-          <button
-            onClick={() => setCreating(true)}
-            className="group flex items-center gap-2 text-zinc-500 pl-3.5 pr-3 py-1.5"
-          >
-            <span className="flex items-center gap-2 transition-transform duration-150 group-hover:scale-110 origin-left">
-              <span className="text-2xl leading-none">+</span>
-              <span className="text-lg font-semibold">New List</span>
-            </span>
-          </button>
+          <>
+            <button
+              onClick={() => setCreating(true)}
+              className="group flex items-center gap-2 text-zinc-500 pl-3.5 pr-3 py-1.5"
+            >
+              <span className="flex items-center gap-2 transition-transform duration-150 group-hover:scale-110 origin-left">
+                <span className="text-2xl leading-none">+</span>
+                <span className="text-lg font-semibold">New List</span>
+              </span>
+            </button>
+            <button
+              onClick={onClose}
+              aria-label="Close sidebar"
+              className="mr-3 text-zinc-300 hover:text-zinc-500 transition-colors"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="1.8"/>
+                <line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" strokeWidth="1.8"/>
+              </svg>
+            </button>
+          </>
         )}
       </div>
 

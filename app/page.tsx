@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-white overflow-hidden">
+    <div className="relative h-screen bg-white overflow-hidden">
       <Navbar />
 
       {/* Mobile layout */}
@@ -44,7 +44,7 @@ export default function Home() {
           Get started for free
         </a>
       </main>
-      <div className="hidden lg:block absolute bottom-50 right-50 pointer-events-none select-none">
+      <div className="hidden lg:block absolute top-[200px] right-50 pointer-events-none select-none">
         <Image
           src="/todo-list.png"
           alt="Todo list preview"
@@ -58,7 +58,7 @@ export default function Home() {
         alt=""
         width={1000}
         height={500}
-        className="hidden lg:block absolute bottom-0 right-0 pointer-events-none select-none rotate-[5deg] translate-y-24 origin-bottom-right"
+        className="hidden lg:block absolute top-[330px] right-0 pointer-events-none select-none rotate-[5deg] origin-bottom-right"
         priority
       />
     </div>

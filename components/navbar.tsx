@@ -10,13 +10,13 @@ export default function Navbar() {
       <div className="flex items-center gap-1">
         <Link
           href="/login"
-          className="px-4 py-3 text-sm font-semibold text-zinc-500 hover:text-zinc-900 transition-colors"
+          className="px-4 py-3 text-sm font-semibold text-zinc-500 hover:text-zinc-900 transition-colors whitespace-nowrap"
         >
           Log in
         </Link>
         <Link
           href="/signup"
-          className="px-5 py-3 text-sm font-semibold text-white bg-coral rounded-full hover:bg-coral/85 transition-colors"
+          className="px-5 py-3 text-sm font-semibold text-white bg-coral rounded-full hover:bg-coral/85 transition-colors whitespace-nowrap"
         >
           Sign up
         </Link>

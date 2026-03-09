@@ -11,12 +11,14 @@ type Props = {
 export default function TodoView({ list, initialTodos }: Props) {
   const [todos, setTodos] = useState<Todo[]>(initialTodos)
   const [newTitle, setNewTitle] = useState('')
+  const [adding, setAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState('')
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
-    if (!newTitle.trim()) return
+    if (!newTitle.trim() || adding) return
+    setAdding(true)
     const res = await fetch('/api/todos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -27,6 +29,7 @@ export default function TodoView({ list, initialTodos }: Props) {
       setTodos(prev => [...prev, created])
       setNewTitle('')
     }
+    setAdding(false)
   }
 
   async function handleToggle(todo: Todo) {
@@ -84,7 +87,8 @@ export default function TodoView({ list, initialTodos }: Props) {
           />
           <button
             type="submit"
-            className="px-5 py-3 md:px-7 md:py-4 rounded-full bg-coral text-white font-semibold text-sm md:text-base hover:bg-coral/85 transition-colors shadow-sm shrink-0"
+            disabled={adding}
+            className="px-5 py-3 md:px-7 md:py-4 rounded-full bg-coral text-white font-semibold text-sm md:text-base hover:bg-coral/85 transition-colors shadow-sm shrink-0 disabled:opacity-50"
           >
             Add
           </button>

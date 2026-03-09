@@ -39,6 +39,7 @@ export default function DashboardShell({ initialLists, initialTodosByList, initi
           initialLists={initialLists}
           selectedId={selectedList?.id ?? null}
           onSelect={handleSelect}
+          onClose={() => setDrawerOpen(false)}
           isOpen={drawerOpen}
         />
       </div>
