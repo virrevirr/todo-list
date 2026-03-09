@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
-import ScrollIntoView from "@/components/scroll-into-view";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -20,7 +19,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunito.className} antialiased`}>
-        <ScrollIntoView />
         {children}
       </body>
     </html>
