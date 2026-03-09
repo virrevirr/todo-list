@@ -28,20 +28,21 @@ export default function SignupForm() {
 
     setLoading(true)
     const supabase = createClient()
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+        },
+      },
+    })
 
     if (error) {
       setLoading(false)
       setError(error.message)
       return
-    }
-
-    if (data.user) {
-      await supabase.from('profiles').upsert({
-        id: data.user.id,
-        first_name: firstName.trim(),
-        last_name: lastName.trim(),
-      })
     }
 
     setLoading(false)

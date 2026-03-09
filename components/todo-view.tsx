@@ -15,7 +15,7 @@ export default function TodoView({ list }: Props) {
 
   useEffect(() => {
     fetch(`/api/todos?list_id=${list.id}`)
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => { if (Array.isArray(data)) setTodos(data) })
   }, [list.id])
 

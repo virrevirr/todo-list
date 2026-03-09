@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import TodoView from '@/components/todo-view'
 import Logo from '@/components/logo'
@@ -8,9 +9,11 @@ import type { List } from '@/lib/types'
 
 type Props = {
   initialLists: List[]
+  initials: string
 }
 
-export default function DashboardShell({ initialLists }: Props) {
+export default function DashboardShell({ initialLists, initials }: Props) {
+  const router = useRouter()
   const [selectedList, setSelectedList] = useState<List | null>(initialLists[0] ?? null)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
@@ -54,7 +57,13 @@ export default function DashboardShell({ initialLists }: Props) {
           <div className="absolute left-1/2 -translate-x-1/2 scale-80">
             <Logo />
           </div>
-          <div />
+          <button
+            aria-label="Profile"
+            onClick={() => router.push('/profile')}
+            className="w-9 h-9 rounded-full bg-coral flex items-center justify-center shrink-0 hover:bg-coral/85 transition-colors"
+          >
+            <span className="text-white text-sm font-bold leading-none">{initials}</span>
+          </button>
         </header>
 
         <main

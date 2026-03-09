@@ -19,6 +19,15 @@ export default function Home() {
           Get started for free
         </a>
       </main>
+      <div className="absolute bottom-50 right-50 pointer-events-none select-none">
+        <Image
+          src="/todo-list.png"
+          alt="Todo list preview"
+          width={480}
+          height={600}
+          className="rounded-3xl shadow-xl"
+        />
+      </div>
       <Image
         src="/flowy-lines.svg"
         alt=""
