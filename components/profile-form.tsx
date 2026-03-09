@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 
@@ -16,17 +16,31 @@ type Props = {
 function EditableField({
   label,
   value,
-  onChange,
-  onSave,
-  saving,
+  onConfirm,
 }: {
   label: string
   value: string
-  onChange: (v: string) => void
-  onSave: () => void
-  saving: boolean
+  onConfirm: (v: string) => void
 }) {
+  const [draft, setDraft] = useState(value)
   const [focused, setFocused] = useState(false)
+
+  useEffect(() => { setDraft(value) }, [value])
+
+  const isDirty = draft.trim() !== value.trim()
+  const isValid = lettersOnly.test(draft.trim()) && draft.trim().length > 0
+
+  function confirm() {
+    if (isDirty && isValid) {
+      onConfirm(draft.trim())
+    } else {
+      setDraft(value)
+    }
+  }
+
+  function revert() {
+    setDraft(value)
+  }
 
   return (
     <div className="flex items-center justify-between py-4 border-b border-zinc-100 group">
@@ -34,25 +48,41 @@ function EditableField({
         <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">{label}</span>
         <input
           type="text"
-          value={value}
+          value={draft}
           onChange={e => {
             const v = e.target.value
-            if (v === '' || lettersOnly.test(v)) onChange(v)
+            if (v === '' || lettersOnly.test(v)) setDraft(v)
           }}
           onFocus={() => setFocused(true)}
-          onBlur={() => { setFocused(false); onSave() }}
-          onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
+          onBlur={() => { setFocused(false); revert() }}
+          onKeyDown={e => {
+            if (e.key === 'Enter') { e.preventDefault(); confirm(); (e.target as HTMLInputElement).blur() }
+            if (e.key === 'Escape') { revert(); (e.target as HTMLInputElement).blur() }
+          }}
           className="text-base text-zinc-800 font-medium bg-transparent focus:outline-none w-full placeholder:text-zinc-300"
           placeholder={`Add ${label.toLowerCase()}`}
         />
       </div>
-      <svg
-        viewBox="0 0 16 16"
-        className={`w-3.5 h-3.5 shrink-0 ml-3 transition-opacity ${focused ? 'opacity-40' : 'opacity-0 group-hover:opacity-20'}`}
-        fill="none"
-      >
-        <path d="M11 2l3 3-8 8H3v-3L11 2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
+      {focused && isDirty && isValid && (
+        <button
+          onMouseDown={e => { e.preventDefault(); confirm() }}
+          className="ml-3 shrink-0 text-turquoise hover:text-turquoise/70 transition-colors"
+          aria-label="Confirm"
+        >
+          <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none">
+            <path d="M2 8l4 4 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      )}
+      {(!focused || !isDirty) && (
+        <svg
+          viewBox="0 0 16 16"
+          className={`w-3.5 h-3.5 shrink-0 ml-3 transition-opacity ${focused ? 'opacity-40' : 'opacity-0 group-hover:opacity-20'}`}
+          fill="none"
+        >
+          <path d="M11 2l3 3-8 8H3v-3L11 2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )}
     </div>
   )
 }
@@ -62,13 +92,13 @@ export default function ProfileForm({ initials, firstName, lastName, email }: Pr
   const [first, setFirst] = useState(firstName)
   const [last, setLast] = useState(lastName)
   const [saving, setSaving] = useState(false)
+
   const [deleting, setDeleting] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
 
-  async function handleSave() {
-    if (!first.trim() || !last.trim()) return
+  async function handleSave(newFirst: string, newLast: string) {
     setError(null)
     setSaving(true)
     setSaved(false)
@@ -76,7 +106,7 @@ export default function ProfileForm({ initials, firstName, lastName, email }: Pr
     const res = await fetch('/api/profile', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ first_name: first.trim(), last_name: last.trim() }),
+      body: JSON.stringify({ first_name: newFirst, last_name: newLast }),
     })
 
     setSaving(false)
@@ -136,8 +166,8 @@ export default function ProfileForm({ initials, firstName, lastName, email }: Pr
 
           {/* Editable fields */}
           <div className="flex flex-col">
-            <EditableField label="First name" value={first} onChange={setFirst} onSave={handleSave} saving={saving} />
-            <EditableField label="Last name" value={last} onChange={setLast} onSave={handleSave} saving={saving} />
+            <EditableField label="First name" value={first} onConfirm={v => { setFirst(v); handleSave(v, last) }} />
+            <EditableField label="Last name" value={last} onConfirm={v => { setLast(v); handleSave(first, v) }} />
             <div className="flex items-center justify-between py-4 border-b border-zinc-100">
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Email</span>
