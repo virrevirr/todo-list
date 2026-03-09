@@ -1,11 +1,101 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import type { List, Todo } from '@/lib/types'
 
 type Props = {
   list: List
   initialTodos: Todo[]
+}
+
+const SWIPE_THRESHOLD = 60
+const REVEAL_WIDTH = 72
+
+function SwipeableItem({ todo, onDelete, children }: {
+  todo: Todo
+  onDelete: () => void
+  children: React.ReactNode
+}) {
+  const [offsetX, setOffsetX] = useState(0)
+  const [dragging, setDragging] = useState(false)
+  const startX = useRef(0)
+  const startY = useRef(0)
+  const isSwipe = useRef(false)
+
+  function onTouchStart(e: React.TouchEvent) {
+    startX.current = e.touches[0].clientX
+    startY.current = e.touches[0].clientY
+    isSwipe.current = false
+    setDragging(true)
+  }
+
+  function onTouchMove(e: React.TouchEvent) {
+    const dx = e.touches[0].clientX - startX.current
+    const dy = e.touches[0].clientY - startY.current
+
+    // Only treat as horizontal swipe if more horizontal than vertical
+    if (!isSwipe.current && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 5) {
+      isSwipe.current = true
+    }
+    if (!isSwipe.current) return
+
+    e.preventDefault()
+    const clamped = Math.min(0, Math.max(-REVEAL_WIDTH, dx + (offsetX === -REVEAL_WIDTH ? -REVEAL_WIDTH : 0)))
+    setOffsetX(clamped)
+  }
+
+  function onTouchEnd() {
+    setDragging(false)
+    if (offsetX < -SWIPE_THRESHOLD) {
+      setOffsetX(-REVEAL_WIDTH)
+    } else {
+      setOffsetX(0)
+    }
+  }
+
+  function close() {
+    setOffsetX(0)
+  }
+
+  return (
+    <div className="relative rounded-2xl overflow-hidden">
+      {/* Delete background */}
+      <div
+        className="absolute inset-y-0 right-0 flex items-center justify-center bg-red-500 rounded-2xl"
+        style={{ width: REVEAL_WIDTH }}
+      >
+        <button
+          onClick={onDelete}
+          className="flex items-center justify-center w-full h-full"
+          aria-label={`Delete ${todo.title}`}
+        >
+          <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+          </svg>
+        </button>
+      </div>
+
+      {/* Swipeable content */}
+      <div
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        style={{
+          transform: `translateX(${offsetX}px)`,
+          transition: dragging ? 'none' : 'transform 0.25s cubic-bezier(0.25, 1, 0.5, 1)',
+        }}
+      >
+        {/* Backdrop to close when swiped open */}
+        {offsetX < 0 && (
+          <div className="absolute inset-0 z-10" onClick={close} />
+        )}
+        {children}
+      </div>
+    </div>
+  )
 }
 
 export default function TodoView({ list, initialTodos }: Props) {
@@ -100,65 +190,64 @@ export default function TodoView({ list, initialTodos }: Props) {
         ) : (
           <ul className="flex flex-col gap-2">
             {sorted.map(todo => (
-              <li
-                key={todo.id}
-                className="group flex items-center gap-4 bg-white rounded-2xl px-5 py-4 border border-zinc-100 hover:border-zinc-200 transition-colors shadow-sm"
-              >
-                {/* Rounded square checkbox */}
-                <button
-                  onClick={() => handleToggle(todo)}
-                  aria-label={todo.completed ? 'Mark incomplete' : 'Mark complete'}
-                  className={`w-6 h-6 rounded-lg border-2 shrink-0 flex items-center justify-center transition-all duration-150
-                    ${todo.completed ? 'bg-turquoise border-turquoise' : 'border-zinc-300 hover:border-turquoise bg-white'}`}
-                >
-                  {todo.completed && (
-                    <svg viewBox="0 0 10 8" className="w-3 h-3" fill="none">
-                      <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  )}
-                </button>
-
-                {/* Title */}
-                {editingId === todo.id ? (
-                  <input
-                    autoFocus
-                    type="text"
-                    value={editingTitle}
-                    onChange={e => setEditingTitle(e.target.value)}
-                    onBlur={() => handleRename(todo)}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter') handleRename(todo)
-                      if (e.key === 'Escape') setEditingId(null)
-                    }}
-                    className="flex-1 text-base text-zinc-700 bg-transparent focus:outline-none border-b border-turquoise"
-                  />
-                ) : (
-                  <span
-                    onClick={() => { setEditingId(todo.id); setEditingTitle(todo.title) }}
-                    className={`flex-1 text-base cursor-text ${todo.completed ? 'line-through text-zinc-400' : 'text-zinc-700'}`}
+              <SwipeableItem key={todo.id} todo={todo} onDelete={() => handleDelete(todo.id)}>
+                <li className="group flex items-center gap-4 bg-white rounded-2xl px-5 py-4 border border-zinc-100 hover:border-zinc-200 transition-colors shadow-sm">
+                  {/* Rounded square checkbox */}
+                  <button
+                    onClick={() => handleToggle(todo)}
+                    aria-label={todo.completed ? 'Mark incomplete' : 'Mark complete'}
+                    className={`w-6 h-6 rounded-lg border-2 shrink-0 flex items-center justify-center transition-all duration-150
+                      ${todo.completed ? 'bg-turquoise border-turquoise' : 'border-zinc-300 hover:border-turquoise bg-white'}`}
                   >
-                    {todo.title}
-                  </span>
-                )}
+                    {todo.completed && (
+                      <svg viewBox="0 0 10 8" className="w-3 h-3" fill="none">
+                        <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </button>
 
-                {/* Status badge */}
-                {todo.completed && (
-                  <span className="text-sm font-medium text-turquoise bg-turquoise/10 px-3 py-1 rounded-full shrink-0">
-                    Done
-                  </span>
-                )}
+                  {/* Title */}
+                  {editingId === todo.id ? (
+                    <input
+                      autoFocus
+                      type="text"
+                      value={editingTitle}
+                      onChange={e => setEditingTitle(e.target.value)}
+                      onBlur={() => handleRename(todo)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') handleRename(todo)
+                        if (e.key === 'Escape') setEditingId(null)
+                      }}
+                      className="flex-1 text-base text-zinc-700 bg-transparent focus:outline-none border-b border-turquoise"
+                    />
+                  ) : (
+                    <span
+                      onClick={() => { setEditingId(todo.id); setEditingTitle(todo.title) }}
+                      className={`flex-1 text-base cursor-text ${todo.completed ? 'line-through text-zinc-400' : 'text-zinc-700'}`}
+                    >
+                      {todo.title}
+                    </span>
+                  )}
 
-                {/* Delete */}
-                <button
-                  onClick={() => handleDelete(todo.id)}
-                  className="opacity-0 group-hover:opacity-100 text-zinc-300 hover:text-zinc-500 transition-all shrink-0"
-                  aria-label={`Delete ${todo.title}`}
-                >
-                  <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none">
-                    <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-                  </svg>
-                </button>
-              </li>
+                  {/* Status badge */}
+                  {todo.completed && (
+                    <span className="text-sm font-medium text-turquoise bg-turquoise/10 px-3 py-1 rounded-full shrink-0">
+                      Done
+                    </span>
+                  )}
+
+                  {/* Delete (desktop hover) */}
+                  <button
+                    onClick={() => handleDelete(todo.id)}
+                    className="hidden md:block opacity-0 group-hover:opacity-100 text-zinc-300 hover:text-zinc-500 transition-all shrink-0"
+                    aria-label={`Delete ${todo.title}`}
+                  >
+                    <svg viewBox="0 0 16 16" className="w-4 h-4" fill="none">
+                      <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                    </svg>
+                  </button>
+                </li>
+              </SwipeableItem>
             ))}
           </ul>
         )}
