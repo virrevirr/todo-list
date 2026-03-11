@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import TodoView from '@/components/todo-view'
@@ -15,11 +15,30 @@ type Props = {
 
 export default function DashboardShell({ initialLists, initialTodosByList, initials }: Props) {
   const router = useRouter()
-  const [selectedList, setSelectedList] = useState<List | null>(initialLists[0] ?? null)
+  const [selectedList, setSelectedList] = useState<List | null>(() => {
+    const storedId = localStorage.getItem('selectedListId')
+    if (storedId) {
+      const match = initialLists.find(l => l.id === storedId)
+      if (match) return match
+    }
+    return initialLists[0] ?? null
+  })
   const [drawerOpen, setDrawerOpen] = useState(false)
+
+  useEffect(() => {
+    const storedId = localStorage.getItem('selectedListId')
+    if (!storedId) return
+    const match = initialLists.find(l => l.id === storedId)
+    if (match) setSelectedList(match)
+  }, [initialLists])
 
   function handleSelect(list: List | null) {
     setSelectedList(list)
+    if (list) {
+      localStorage.setItem('selectedListId', list.id)
+    } else {
+      localStorage.removeItem('selectedListId')
+    }
     setDrawerOpen(false)
   }
 
