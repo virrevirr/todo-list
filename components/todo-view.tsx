@@ -103,8 +103,6 @@ export default function TodoView({ list, initialTodos }: Props) {
   const [todos, setTodos] = useState<Todo[]>(initialTodos)
   const [newTitle, setNewTitle] = useState('')
   const [adding, setAdding] = useState(false)
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editingTitle, setEditingTitle] = useState('')
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
 
   async function handleAdd(e: React.FormEvent) {
@@ -141,23 +139,6 @@ export default function TodoView({ list, initialTodos }: Props) {
     })
     if (!res.ok) {
       setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: todo.completed } : t))
-    }
-  }
-
-  async function handleRename(todo: Todo) {
-    const trimmed = editingTitle.trim()
-    setEditingId(null)
-    if (!trimmed || trimmed === todo.title) return
-
-    setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, title: trimmed } : t))
-
-    const res = await fetch(`/api/todos/${todo.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: trimmed }),
-    })
-    if (!res.ok) {
-      setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, title: todo.title } : t))
     }
   }
 
@@ -226,28 +207,12 @@ export default function TodoView({ list, initialTodos }: Props) {
                     )}
                   </button>
 
-                  {/* Title */}
-                  {editingId === todo.id ? (
-                    <input
-                      autoFocus
-                      type="text"
-                      value={editingTitle}
-                      onChange={e => setEditingTitle(e.target.value)}
-                      onBlur={() => handleRename(todo)}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') handleRename(todo)
-                        if (e.key === 'Escape') setEditingId(null)
-                      }}
-                      className="flex-1 text-base text-zinc-700 bg-transparent focus:outline-none border-b border-turquoise"
-                    />
-                  ) : (
-                    <span
-                      onClick={e => { e.stopPropagation(); setEditingId(todo.id); setEditingTitle(todo.title) }}
-                      className={`flex-1 text-base cursor-text ${todo.completed ? 'line-through text-zinc-400' : 'text-zinc-700'}`}
-                    >
-                      {todo.title}
-                    </span>
-                  )}
+                  {/* Title (read-only here; editing via details sidebar) */}
+                  <span
+                    className={`flex-1 text-base ${todo.completed ? 'line-through text-zinc-400' : 'text-zinc-700'}`}
+                  >
+                    {todo.title}
+                  </span>
 
                   {/* Status badge */}
                   {todo.completed && (
