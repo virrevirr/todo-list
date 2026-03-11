@@ -145,7 +145,7 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose, onSaved }
               Task name
             </p>
             {editingTitle ? (
-              <div className="flex w-full items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-4 py-3">
+              <div className="flex w-full items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-4 py-3 focus-within:ring-2 focus-within:ring-turquoise">
                 <input
                   autoFocus
                   type="text"
@@ -189,7 +189,7 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose, onSaved }
             <p className="text-xs font-semibold text-zinc-400 uppercase tracking-[0.12em]">
               Description
             </p>
-            <div className="min-h-[72px] rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-600">
+            <div className="min-h-[72px] rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-600 focus-within:ring-2 focus-within:ring-turquoise">
               <textarea
                 value={draftDescription}
                 onChange={e => setDraftDescription(e.target.value)}
@@ -213,7 +213,7 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose, onSaved }
                     type="date"
                     value={draftDate}
                     onChange={e => setDraftDate(e.target.value)}
-                    className="w-full rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-200 appearance-none"
+                    className="w-full rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 focus:outline-none focus:ring-2 focus:ring-turquoise appearance-none"
                   />
                 </div>
 
@@ -224,7 +224,7 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose, onSaved }
                     type="time"
                     value={draftTime}
                     onChange={e => setDraftTime(e.target.value)}
-                    className="w-full rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-200 appearance-none"
+                    className="w-full rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 focus:outline-none focus:ring-2 focus:ring-turquoise appearance-none"
                   />
                 </div>
               </div>
