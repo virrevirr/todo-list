@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 import LogoutButton from '@/components/logout-button'
-import Logo from '@/components/logo'
+import AppHeader from '@/components/app-header'
 
 const lettersOnly = /^[a-zA-ZÀ-ÖØ-öø-ÿ\s'-]+$/
 
@@ -141,23 +141,20 @@ export default function ProfileForm({ initials, firstName, lastName, email }: Pr
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50">
-      {/* Header — matches dashboard */}
-      <header className="relative flex h-[68px] items-center justify-between border-b border-zinc-200 bg-white px-4 md:px-6 shrink-0">
-        <button
-          onClick={() => router.push('/dashboard')}
-          className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700"
-          aria-label="Back to dashboard"
-        >
-          <svg viewBox="0 0 16 16" className="h-5 w-5 shrink-0" fill="none">
-            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span className="text-sm font-medium">Back</span>
-        </button>
-        <div className="absolute left-1/2 -translate-x-1/2 scale-65 md:scale-80">
-          <Logo />
-        </div>
-        <div className="w-9 shrink-0" aria-hidden />
-      </header>
+      <AppHeader
+        left={
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700"
+            aria-label="Back to dashboard"
+          >
+            <svg viewBox="0 0 16 16" className="h-5 w-5 shrink-0" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span className="text-sm font-medium">Back</span>
+          </button>
+        }
+      />
 
       <main className="flex flex-1 flex-col overflow-y-auto px-4 md:px-8 py-6 md:py-10">
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col gap-8">

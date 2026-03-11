@@ -8,15 +8,17 @@ type Props = {
   listTitle: string
   onClose: () => void
   onSaved?: (updated: Todo) => void
+  onDelete?: (id: string) => void
 }
 
-export default function TodoDetailsSidebar({ todo, listTitle, onClose, onSaved }: Props) {
+export default function TodoDetailsSidebar({ todo, listTitle, onClose, onSaved, onDelete }: Props) {
   const [draftTitle, setDraftTitle] = useState('')
   const [editingTitle, setEditingTitle] = useState(false)
   const [draftDescription, setDraftDescription] = useState('')
   const [draftDate, setDraftDate] = useState('')
   const [draftTime, setDraftTime] = useState('')
   const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -112,6 +114,21 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose, onSaved }
     }
   }
 
+  async function handleDelete() {
+    if (!todo || deleting || !onDelete) return
+    setDeleting(true)
+    setError(null)
+    const res = await fetch(`/api/todos/${todo.id}`, { method: 'DELETE' })
+    if (res.ok) {
+      onDelete(todo.id)
+      onClose()
+    } else {
+      const data = await res.json().catch(() => ({}))
+      setError(data.error ?? 'Could not delete task.')
+    }
+    setDeleting(false)
+  }
+
   return (
     <>
       {/* Overlay */}
@@ -124,18 +141,35 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose, onSaved }
       <aside
         className="fixed inset-y-0 right-0 w-80 max-w-full bg-white shadow-2xl border-l border-zinc-200 z-50 flex flex-col"
       >
-        {/* Top bar with mirrored sidebar icon */}
-        <header className="flex items-center px-4 py-4">
+        {/* Top bar: close (left), delete (right) */}
+        <header className="flex items-center justify-between px-4 py-4 border-b border-zinc-100">
           <button
             onClick={handleSaveAndClose}
             aria-label="Close details"
-            className="text-zinc-300 hover:text-zinc-500 transition-colors"
+            className="text-zinc-300 hover:text-zinc-500 transition-colors p-1"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="1.6" />
               <line x1="15" y1="3" x2="15" y2="21" stroke="currentColor" strokeWidth="1.6" />
             </svg>
           </button>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
+              aria-label={`Delete ${todo.title}`}
+              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-zinc-500 hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50"
+            >
+              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                <path d="M10 11v6M14 11v6" />
+                <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+              </svg>
+              {deleting ? 'Deleting…' : 'Delete'}
+            </button>
+          )}
         </header>
 
         <div className="flex-1 overflow-y-auto px-6 pb-6 pt-2 flex flex-col gap-8">

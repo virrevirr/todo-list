@@ -67,7 +67,6 @@ export default function TodoView({ list, initialTodos }: Props) {
                 key={todo.id}
                 todo={todo}
                 onToggle={handleToggle}
-                onDelete={handleDelete}
                 onSelect={setSelectedTodo}
               />
             ))}
@@ -83,6 +82,7 @@ export default function TodoView({ list, initialTodos }: Props) {
           setTodos(prev => prev.map(t => t.id === updated.id ? updated : t))
           setSelectedTodo(updated)
         }}
+        onDelete={handleDelete}
       />
     </div>
   )
