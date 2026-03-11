@@ -221,6 +221,18 @@ export default function TodoView({ list, initialTodos }: Props) {
                     </span>
                   )}
 
+                  {/* Deadline tag */}
+                  {todo.deadline && (() => {
+                    const d = new Date(todo.deadline)
+                    if (Number.isNaN(d.getTime())) return null
+                    const label = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
+                    return (
+                      <span className="text-sm font-medium text-zinc-500 bg-zinc-100 px-3 py-1 rounded-full shrink-0">
+                        {label}
+                      </span>
+                    )
+                  })()}
+
                   {/* Delete (desktop hover) */}
                   <button
                     onClick={e => { e.stopPropagation(); handleDelete(todo.id) }}
@@ -242,6 +254,10 @@ export default function TodoView({ list, initialTodos }: Props) {
         todo={selectedTodo}
         listTitle={list.title}
         onClose={() => setSelectedTodo(null)}
+        onSaved={updated => {
+          setTodos(prev => prev.map(t => t.id === updated.id ? updated : t))
+          setSelectedTodo(updated)
+        }}
       />
     </div>
   )

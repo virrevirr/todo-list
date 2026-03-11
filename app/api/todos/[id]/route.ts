@@ -14,7 +14,7 @@ export async function PATCH(
 
   const { id } = await params
   const body = await request.json()
-  const { completed, title } = body
+  const { completed, title, description, deadline } = body
 
   if (completed !== undefined && typeof completed !== 'boolean') {
     return NextResponse.json({ error: 'completed must be a boolean' }, { status: 400 })
@@ -22,10 +22,18 @@ export async function PATCH(
   if (title !== undefined && (typeof title !== 'string' || !title.trim())) {
     return NextResponse.json({ error: 'title must be a non-empty string' }, { status: 400 })
   }
+  if (description !== undefined && typeof description !== 'string') {
+    return NextResponse.json({ error: 'description must be a string' }, { status: 400 })
+  }
+  if (deadline !== undefined && deadline !== null && typeof deadline !== 'string') {
+    return NextResponse.json({ error: 'deadline must be a string or null' }, { status: 400 })
+  }
 
   const updates: Record<string, unknown> = {}
   if (completed !== undefined) updates.completed = completed
   if (title !== undefined) updates.title = title.trim()
+  if (description !== undefined) updates.description = description
+  if (deadline !== undefined) updates.deadline = deadline
 
   const { data: todo, error } = await supabase
     .from('todos')

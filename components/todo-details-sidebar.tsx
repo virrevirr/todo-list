@@ -7,29 +7,117 @@ type Props = {
   todo: Todo | null
   listTitle: string
   onClose: () => void
+  onSaved?: (updated: Todo) => void
 }
 
-export default function TodoDetailsSidebar({ todo, listTitle, onClose }: Props) {
+export default function TodoDetailsSidebar({ todo, listTitle, onClose, onSaved }: Props) {
   const [draftTitle, setDraftTitle] = useState('')
   const [editingTitle, setEditingTitle] = useState(false)
   const [draftDescription, setDraftDescription] = useState('')
+  const [draftDate, setDraftDate] = useState('')
+  const [draftTime, setDraftTime] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (todo) {
       setDraftTitle(todo.title)
       setDraftDescription(todo.description ?? '')
+      if (todo.deadline) {
+        const d = new Date(todo.deadline)
+        if (!Number.isNaN(d.getTime())) {
+          // Use local date/time parts so the picker shows the time
+          // the user originally chose in their own timezone.
+          const year = d.getFullYear()
+          const month = String(d.getMonth() + 1).padStart(2, '0')
+          const day = String(d.getDate()).padStart(2, '0')
+          const hours = String(d.getHours()).padStart(2, '0')
+          const minutes = String(d.getMinutes()).padStart(2, '0')
+
+          setDraftDate(`${year}-${month}-${day}`)   // YYYY-MM-DD
+          setDraftTime(`${hours}:${minutes}`)       // HH:MM (local)
+        } else {
+          setDraftDate('')
+          setDraftTime('')
+        }
+      } else {
+        setDraftDate('')
+        setDraftTime('')
+      }
       setEditingTitle(false)
+      setError(null)
+      setSaving(false)
     }
   }, [todo])
 
   if (!todo) return null
+
+  async function handleSaveAndClose() {
+    if (!todo || saving) return
+
+    try {
+      setSaving(true)
+      setError(null)
+
+      const updates: Record<string, unknown> = {}
+
+      const trimmedTitle = draftTitle.trim()
+      if (trimmedTitle && trimmedTitle !== todo.title) {
+        updates.title = trimmedTitle
+      }
+
+      const normalizedDescription = draftDescription
+      if (normalizedDescription !== (todo.description ?? '')) {
+        updates.description = normalizedDescription === '' ? null : normalizedDescription
+      }
+
+      let newDeadline: string | null = todo.deadline ?? null
+      if (draftDate) {
+        const isoBase = `${draftDate}T${draftTime || '00:00'}:00`
+        const d = new Date(isoBase)
+        newDeadline = Number.isNaN(d.getTime()) ? null : d.toISOString()
+      } else if (!draftDate && !draftTime) {
+        newDeadline = null
+      }
+      if (newDeadline !== todo.deadline) {
+        updates.deadline = newDeadline
+      }
+
+      if (Object.keys(updates).length === 0) {
+        onClose()
+        setSaving(false)
+        return
+      }
+
+      const res = await fetch(`/api/todos/${todo.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setError(data.error ?? 'Could not save changes.')
+        setSaving(false)
+        return
+      }
+
+      const updated: Todo = await res.json()
+      if (onSaved) onSaved(updated)
+      onClose()
+      setSaving(false)
+    } catch {
+      setError('Could not save changes.')
+      setSaving(false)
+    }
+  }
 
   return (
     <>
       {/* Overlay */}
       <div
         className="fixed inset-0 bg-black/20 z-40"
-        onClick={onClose}
+        onClick={handleSaveAndClose}
       />
 
       {/* Sidebar panel */}
@@ -39,7 +127,7 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose }: Props) 
         {/* Top bar with mirrored sidebar icon */}
         <header className="flex items-center px-4 py-4">
           <button
-            onClick={onClose}
+            onClick={handleSaveAndClose}
             aria-label="Close details"
             className="text-zinc-300 hover:text-zinc-500 transition-colors"
           >
@@ -57,7 +145,7 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose }: Props) 
               Task name
             </p>
             {editingTitle ? (
-              <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-2.5">
+              <div className="flex w-full items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-4 py-3">
                 <input
                   autoFocus
                   type="text"
@@ -73,20 +161,21 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose }: Props) 
                       e.currentTarget.blur()
                     }
                   }}
-                  className="w-full bg-transparent text-base md:text-lg font-semibold text-zinc-800 placeholder:text-zinc-300 focus:outline-none"
+                  className="min-w-0 flex-1 bg-transparent text-base md:text-lg font-semibold text-zinc-800 placeholder:text-zinc-300 focus:outline-none"
                   placeholder="Todo name"
                 />
+                <span className="w-3.5 shrink-0" aria-hidden="true" />
               </div>
             ) : (
               <button
                 type="button"
                 onClick={() => setEditingTitle(true)}
-                className="inline-flex w-full items-center gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 mx-auto max-w-full cursor-text hover:bg-white hover:border-zinc-300 transition-colors"
+                className="inline-flex w-full items-center gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 cursor-text hover:bg-white hover:border-zinc-300 transition-colors"
               >
-                <span className="text-base md:text-lg font-semibold text-zinc-800 truncate">
+                <span className="min-w-0 flex-1 truncate text-left text-base md:text-lg font-semibold text-zinc-800">
                   {draftTitle || 'Todo details'}
                 </span>
-                <span className="ml-auto text-zinc-300">
+                <span className="shrink-0 text-zinc-300">
                   <svg viewBox="0 0 16 16" className="w-3.5 h-3.5" fill="none">
                     <path d="M11 2l3 3-8 8H3v-3l8-8z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -115,17 +204,38 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose }: Props) 
             <p className="text-xs font-semibold text-zinc-400 uppercase tracking-[0.12em]">
               Deadline
             </p>
-            <div className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-600">
-              <span className="text-zinc-400 italic">
-                No deadline set
-              </span>
+            <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-600 space-y-4">
+              <div className="flex flex-col gap-3">
+                {/* Date picker */}
+                <div className="flex-1 flex flex-col gap-1.5">
+                  <span className="text-xs text-zinc-400">Date</span>
+                  <input
+                    type="date"
+                    value={draftDate}
+                    onChange={e => setDraftDate(e.target.value)}
+                    className="w-full rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-200 appearance-none"
+                  />
+                </div>
+
+                {/* Time picker */}
+                <div className="flex-1 flex flex-col gap-1.5">
+                  <span className="text-xs text-zinc-400">Time</span>
+                  <input
+                    type="time"
+                    value={draftTime}
+                    onChange={e => setDraftTime(e.target.value)}
+                    className="w-full rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-200 appearance-none"
+                  />
+                </div>
+              </div>
             </div>
           </section>
 
-          {/* Context (small, subtle) */}
-          <div className="mt-auto text-xs text-zinc-400">
-            <span className="font-medium">List:</span> {listTitle}
-          </div>
+          {error && (
+            <p className="text-xs text-red-400">
+              {error}
+            </p>
+          )}
         </div>
 
         {/* Footer actions */}
@@ -134,16 +244,18 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose }: Props) 
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 rounded-full border border-zinc-200 text-zinc-600 text-sm font-semibold hover:bg-white hover:border-zinc-300 transition-colors"
+              className="flex-1 py-2.5 rounded-full border border-zinc-200 text-zinc-600 text-sm font-semibold hover:bg-white hover:border-zinc-300 transition-colors disabled:opacity-50"
+              disabled={saving}
             >
               Cancel
             </button>
             <button
               type="button"
-              onClick={onClose}
-              className="flex-1 py-2.5 rounded-full bg-coral text-white text-sm font-semibold hover:bg-coral/90 shadow-sm transition-colors"
+              onClick={handleSaveAndClose}
+              className="flex-1 py-2.5 rounded-full bg-coral text-white text-sm font-semibold hover:bg-coral/90 shadow-sm transition-colors disabled:opacity-50"
+              disabled={saving}
             >
-              Done
+              {saving ? 'Saving…' : 'Done'}
             </button>
           </div>
         </footer>

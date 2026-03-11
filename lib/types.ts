@@ -12,4 +12,5 @@ export type Todo = {
   completed: boolean
   created_at: string
   description?: string | null
+  deadline?: string | null
 }
