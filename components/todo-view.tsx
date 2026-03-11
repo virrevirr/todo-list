@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import type { List, Todo } from '@/lib/types'
+import TodoDetailsSidebar from '@/components/todo-details-sidebar'
 
 type Props = {
   list: List
@@ -104,6 +105,7 @@ export default function TodoView({ list, initialTodos }: Props) {
   const [adding, setAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState('')
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
@@ -206,10 +208,13 @@ export default function TodoView({ list, initialTodos }: Props) {
           <ul className="flex flex-col gap-2">
             {sorted.map(todo => (
               <SwipeableItem key={todo.id} todo={todo} onDelete={() => handleDelete(todo.id)}>
-                <li className="group flex items-center gap-4 bg-white rounded-2xl px-5 py-4 border border-zinc-100 hover:border-zinc-200 transition-colors shadow-sm">
+                <li
+                  className="group flex items-center gap-4 bg-white rounded-2xl px-5 py-4 border border-zinc-100 hover:border-zinc-200 transition-colors shadow-sm cursor-pointer"
+                  onClick={() => setSelectedTodo(todo)}
+                >
                   {/* Rounded square checkbox */}
                   <button
-                    onClick={() => handleToggle(todo)}
+                    onClick={e => { e.stopPropagation(); handleToggle(todo) }}
                     aria-label={todo.completed ? 'Mark incomplete' : 'Mark complete'}
                     className={`w-6 h-6 rounded-lg border-2 shrink-0 flex items-center justify-center transition-all duration-150
                       ${todo.completed ? 'bg-turquoise border-turquoise' : 'border-zinc-300 hover:border-turquoise bg-white'}`}
@@ -237,7 +242,7 @@ export default function TodoView({ list, initialTodos }: Props) {
                     />
                   ) : (
                     <span
-                      onClick={() => { setEditingId(todo.id); setEditingTitle(todo.title) }}
+                      onClick={e => { e.stopPropagation(); setEditingId(todo.id); setEditingTitle(todo.title) }}
                       className={`flex-1 text-base cursor-text ${todo.completed ? 'line-through text-zinc-400' : 'text-zinc-700'}`}
                     >
                       {todo.title}
@@ -253,7 +258,7 @@ export default function TodoView({ list, initialTodos }: Props) {
 
                   {/* Delete (desktop hover) */}
                   <button
-                    onClick={() => handleDelete(todo.id)}
+                    onClick={e => { e.stopPropagation(); handleDelete(todo.id) }}
                     className="hidden md:block opacity-0 group-hover:opacity-100 text-zinc-300 hover:text-zinc-500 transition-all shrink-0"
                     aria-label={`Delete ${todo.title}`}
                   >
@@ -268,6 +273,11 @@ export default function TodoView({ list, initialTodos }: Props) {
         )}
 
       </div>
+      <TodoDetailsSidebar
+        todo={selectedTodo}
+        listTitle={list.title}
+        onClose={() => setSelectedTodo(null)}
+      />
     </div>
   )
 }
