@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ToDo
 
-## Getting Started
+A task manager built with Next.js and Supabase. Create lists, add tasks, set deadlines, and track what you've done.
 
-First, run the development server:
+## Tech stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework** — [Next.js 16](https://nextjs.org) (App Router, Turbopack)
+- **Auth & Database** — [Supabase](https://supabase.com) (Row Level Security, `timestamptz` deadlines)
+- **Styling** — [Tailwind CSS 4](https://tailwindcss.com)
+- **Testing** — [Playwright](https://playwright.dev) (E2E)
+- **Language** — TypeScript, React 19
+
+## Features
+
+- Email/password signup and login
+- Create, rename, and delete todo lists
+- Add, complete, un-complete, and delete tasks
+- Task detail sidebar with description and deadline
+- Overdue deadline indicator (coral tag when past due)
+- Responsive mobile layout with stacked tags
+- User profile with editable name
+- Account deletion
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 18+
+- A Supabase project with `lists`, `todos`, and `profiles` tables
+
+### Environment variables
+
+Create a `.env.local` file in the project root:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install and run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  page.tsx              — Landing page
+  (auth)/login/         — Login
+  (auth)/signup/        — Signup
+  dashboard/            — Main app (lists + todos)
+  profile/              — User profile
+  api/lists/            — Lists CRUD
+  api/todos/            — Todos CRUD
+  api/profile/          — Profile update & account deletion
+components/
+  dashboard-shell.tsx   — Dashboard layout with sidebar drawer
+  sidebar.tsx           — List navigation and creation
+  todo-view.tsx         — Todo list for a selected list
+  todo-list-item.tsx    — Single todo row with overdue logic
+  todo-details-sidebar.tsx — Detail panel (title, description, deadline)
+  add-todo-form.tsx     — New task input
+  profile-form.tsx      — Profile editing and account deletion
+lib/
+  types.ts              — Shared TypeScript types (List, Todo)
+  supabase-browser.ts   — Supabase client (browser)
+  supabase-server.ts    — Supabase client (server)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Testing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Tests use Playwright and run against `http://localhost:3000`.
 
-## Deploy on Vercel
+To run authenticated tests locally, add to `.env.local`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+TEST_EMAIL=your-test-user@example.com
+TEST_PASSWORD=your-test-password
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Then:
+
+```bash
+npm test          # headless
+npm run test:ui   # interactive UI
+```
+
+## Deployment
+
+Deploy to [Vercel](https://vercel.com) with the same environment variables set in your project settings.
