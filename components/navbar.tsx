@@ -3,7 +3,7 @@ import Logo from '@/components/logo'
 
 export default function Navbar() {
   return (
-    <nav className="flex items-center justify-between px-3 md:px-30 py-2 border-b border-zinc-200">
+    <nav className="flex h-[68px] items-center justify-between px-4 md:px-30 border-b border-zinc-200 shrink-0">
       <Link href="/" className="scale-65 md:scale-80 origin-left">
         <Logo />
       </Link>
