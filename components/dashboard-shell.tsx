@@ -1,18 +1,15 @@
 'use client'
-
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import TodoView from '@/components/todo-view'
-import Logo from '@/components/logo'
+import AppHeader from '@/components/app-header'
 import type { List, Todo } from '@/lib/types'
-
 type Props = {
   initialLists: List[]
   initialTodosByList: Record<string, Todo[]>
   initials: string
 }
-
 export default function DashboardShell({ initialLists, initialTodosByList, initials }: Props) {
   const router = useRouter()
   const [selectedList, setSelectedList] = useState<List | null>(() => {
@@ -25,14 +22,12 @@ export default function DashboardShell({ initialLists, initialTodosByList, initi
     return initialLists[0] ?? null
   })
   const [drawerOpen, setDrawerOpen] = useState(false)
-
   useEffect(() => {
     const storedId = window.localStorage.getItem('selectedListId')
     if (!storedId) return
     const match = initialLists.find(l => l.id === storedId)
     if (match) setSelectedList(match)
   }, [initialLists])
-
   function handleSelect(list: List | null) {
     setSelectedList(list)
     if (list) {
@@ -66,27 +61,28 @@ export default function DashboardShell({ initialLists, initialTodosByList, initi
 
       {/* Main content */}
       <div className="flex flex-col flex-1 min-w-0">
-        <header className="relative flex h-[68px] items-center justify-between px-4 md:px-6 border-b border-zinc-200 shrink-0">
-          <button
-            onClick={() => setDrawerOpen(true)}
-            className="text-zinc-400 hover:text-zinc-600 transition-colors p-1"
-            aria-label="Open sidebar"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </button>
-          <div className="absolute left-1/2 -translate-x-1/2 scale-65 md:scale-80">
-            <Logo />
-          </div>
-          <button
-            aria-label="Profile"
-            onClick={() => router.push('/profile')}
-            className="w-9 h-9 rounded-full bg-coral flex items-center justify-center shrink-0 hover:bg-coral/85 transition-colors"
-          >
-            <span className="text-white text-sm font-bold leading-none">{initials}</span>
-          </button>
-        </header>
+        <AppHeader
+          left={
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="text-zinc-400 hover:text-zinc-600 transition-colors p-1"
+              aria-label="Open sidebar"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </button>
+          }
+          right={
+            <button
+              aria-label="Profile"
+              onClick={() => router.push('/profile')}
+              className="w-9 h-9 rounded-full bg-coral flex items-center justify-center shrink-0 hover:bg-coral/85 transition-colors"
+            >
+              <span className="text-white text-sm font-bold leading-none">{initials}</span>
+            </button>
+          }
+        />
 
         <main
           className="relative flex-1 overflow-hidden bg-zinc-50"
