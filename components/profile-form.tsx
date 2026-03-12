@@ -23,7 +23,7 @@ function EditableField({
   label: string
   value: string
   onConfirm: (v: string) => void
-}): JSX.Element {
+}) {
   const [draft, setDraft] = useState(value)
   const [focused, setFocused] = useState(false)
 
@@ -91,7 +91,7 @@ function EditableField({
   )
 }
 
-export default function ProfileForm({ initials, firstName, lastName, email }: Props): JSX.Element {
+export default function ProfileForm({ initials, firstName, lastName, email }: Props) {
   const router = useRouter()
   const [first, setFirst] = useState(firstName)
   const [last, setLast] = useState(lastName)

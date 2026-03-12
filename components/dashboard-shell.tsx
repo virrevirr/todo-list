@@ -16,7 +16,8 @@ type Props = {
 export default function DashboardShell({ initialLists, initialTodosByList, initials }: Props) {
   const router = useRouter()
   const [selectedList, setSelectedList] = useState<List | null>(() => {
-    const storedId = localStorage.getItem('selectedListId')
+    if (typeof window === 'undefined') return initialLists[0] ?? null
+    const storedId = window.localStorage.getItem('selectedListId')
     if (storedId) {
       const match = initialLists.find(l => l.id === storedId)
       if (match) return match
@@ -26,7 +27,7 @@ export default function DashboardShell({ initialLists, initialTodosByList, initi
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   useEffect(() => {
-    const storedId = localStorage.getItem('selectedListId')
+    const storedId = window.localStorage.getItem('selectedListId')
     if (!storedId) return
     const match = initialLists.find(l => l.id === storedId)
     if (match) setSelectedList(match)
@@ -35,9 +36,9 @@ export default function DashboardShell({ initialLists, initialTodosByList, initi
   function handleSelect(list: List | null) {
     setSelectedList(list)
     if (list) {
-      localStorage.setItem('selectedListId', list.id)
+      window.localStorage.setItem('selectedListId', list.id)
     } else {
-      localStorage.removeItem('selectedListId')
+      window.localStorage.removeItem('selectedListId')
     }
     setDrawerOpen(false)
   }
