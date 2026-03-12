@@ -58,7 +58,7 @@ export default function Home() {
         alt=""
         width={1000}
         height={500}
-        className="hidden lg:block absolute top-[330px] right-0 pointer-events-none select-none rotate-[deg] origin-bottom-right"
+        className="hidden lg:block absolute top-[330px] right-0 pointer-events-none select-none origin-bottom-right"
         priority
       />
     </div>

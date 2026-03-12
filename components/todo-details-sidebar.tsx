@@ -118,15 +118,14 @@ export default function TodoDetailsSidebar({ todo, listTitle, onClose, onSaved, 
     if (!todo || deleting || !onDelete) return
     setDeleting(true)
     setError(null)
-    const res = await fetch(`/api/todos/${todo.id}`, { method: 'DELETE' })
-    if (res.ok) {
-      onDelete(todo.id)
+    try {
+      await Promise.resolve(onDelete(todo.id))
       onClose()
-    } else {
-      const data = await res.json().catch(() => ({}))
-      setError(data.error ?? 'Could not delete task.')
+    } catch {
+      setError('Could not delete task.')
+    } finally {
+      setDeleting(false)
     }
-    setDeleting(false)
   }
 
   return (
