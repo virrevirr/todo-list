@@ -1,0 +1,38 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "Back to home" [ref=e5] [cursor=pointer]:
+      - /url: /
+      - img [ref=e6]
+      - generic [ref=e8]: Back
+    - generic:
+      - img:
+        - generic: TOD
+  - generic [ref=e10]:
+    - heading "Create an account" [level=1] [ref=e11]
+    - paragraph [ref=e12]: Start managing your tasks today
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - generic [ref=e15]: First name
+        - textbox "First name" [ref=e16]:
+          - /placeholder: Astrid
+      - generic [ref=e17]:
+        - generic [ref=e18]: Last name
+        - textbox "Last name" [ref=e19]:
+          - /placeholder: Lindqvist
+      - generic [ref=e20]:
+        - generic [ref=e21]: Email
+        - textbox "Email" [ref=e22]:
+          - /placeholder: you@example.com
+      - generic [ref=e23]:
+        - generic [ref=e24]: Password
+        - textbox "Password" [ref=e25]:
+          - /placeholder: Min. 6 characters
+      - button "Create account" [ref=e26]
+      - paragraph [ref=e27]:
+        - text: Already have an account?
+        - link "Log in" [ref=e28] [cursor=pointer]:
+          - /url: /login
+```

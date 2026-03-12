@@ -29,5 +29,10 @@
           - link "Sign up" [ref=e22] [cursor=pointer]:
             - /url: /signup
   - button "Open Next.js Dev Tools" [ref=e28] [cursor=pointer]:
-    - img [ref=e29]
+    - generic [ref=e31]:
+      - text: Compiling
+      - generic [ref=e32]:
+        - generic [ref=e33]: .
+        - generic [ref=e34]: .
+        - generic [ref=e35]: .
 ```

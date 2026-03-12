@@ -1,0 +1,185 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+    - img [ref=e8]
+  - alert [ref=e11]
+  - generic [ref=e12]:
+    - complementary [ref=e14]:
+      - generic [ref=e15]:
+        - button "+ New List" [ref=e16]:
+          - generic [ref=e17]:
+            - generic [ref=e18]: +
+            - generic [ref=e19]: New List
+        - button "Close sidebar" [ref=e20]:
+          - img [ref=e21]
+      - navigation [ref=e23]:
+        - generic [ref=e24] [cursor=pointer]:
+          - generic [ref=e25]: Hej
+          - button "Delete Hej" [ref=e26]: ✕
+        - generic [ref=e27] [cursor=pointer]:
+          - generic [ref=e28]: Hej
+          - button "Delete Hej" [ref=e29]: ✕
+        - generic [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]: Another list
+          - button "Delete Another list" [ref=e32]: ✕
+        - generic [ref=e33] [cursor=pointer]:
+          - generic [ref=e34]: Shopping
+          - button "Delete Shopping" [ref=e35]: ✕
+        - generic [ref=e36] [cursor=pointer]:
+          - generic [ref=e37]: My new list
+          - button "Delete My new list" [ref=e38]: ✕
+      - button "Log out" [ref=e40]
+    - generic [ref=e41]:
+      - banner [ref=e42]:
+        - button "Open sidebar" [ref=e44]:
+          - img [ref=e45]
+        - generic:
+          - img:
+            - generic: TOD
+        - button "Profile" [ref=e48]:
+          - generic [ref=e49]: AO
+      - main [ref=e50]:
+        - generic [ref=e52]:
+          - heading "Hej" [level=2] [ref=e53]
+          - generic [ref=e54]:
+            - textbox "Add a new task..." [ref=e55]
+            - button "Add" [ref=e56]
+          - list [ref=e57]:
+            - listitem [ref=e58] [cursor=pointer]:
+              - button "Mark complete" [ref=e59]
+              - generic [ref=e61]: Another task
+              - img [ref=e63]
+            - listitem [ref=e67] [cursor=pointer]:
+              - button "Mark complete" [ref=e68]
+              - generic [ref=e70]: Hejhejk
+              - img [ref=e72]
+            - listitem [ref=e76] [cursor=pointer]:
+              - button "Mark complete" [ref=e77]
+              - generic [ref=e78]:
+                - generic [ref=e79]: Hejhbgvhvjgv hgcvhbjkgvcfdxddcghvbjnkmlnjbhvgcfdx
+                - paragraph [ref=e80]: Hejhbgvhvjgv hgcvhbjkgvcfdxddcghvbjnkmlnjbhvgcfdxihbjHejhbgvhvjgv hgcvhbjkgvcfdxddcghvbjnkmlnjbhvgcfdxihbjHejhbgvhvjgv hgcvhbjkgvcfdxddcghvbjnkmlnjbhvgcfdxihbjHejhbgvhvjgv hgcvhbjkgvcfdxddcghvbjnkmlnjbhvgcfdxihbjHejhbgvhvjgv hgcvhbjkgvcfdxddcghvbjnkmlnjbhvgcfdxihbjHejhbgvhvjgv hgcvhbjkgvcfdxddcghvbjnkmlnjbhvgcfdxihbjHejhbgvhvjgv hgcvhbjkgvcfdxddcghvbjnkmlnjbhvgcfdxihbj
+              - img [ref=e82]
+            - listitem [ref=e86] [cursor=pointer]:
+              - button "Mark complete" [ref=e87]
+              - generic [ref=e89]: Test todo
+              - img [ref=e91]
+            - listitem [ref=e95] [cursor=pointer]:
+              - button "Mark complete" [ref=e96]
+              - generic [ref=e98]: Test todo
+              - img [ref=e100]
+            - listitem [ref=e104] [cursor=pointer]:
+              - button "Mark complete" [ref=e105]
+              - generic [ref=e107]: Test todo
+              - img [ref=e109]
+            - listitem [ref=e113] [cursor=pointer]:
+              - button "Mark complete" [ref=e114]
+              - generic [ref=e116]: Test todo
+              - img [ref=e118]
+            - listitem [ref=e122] [cursor=pointer]:
+              - button "Mark complete" [ref=e123]
+              - generic [ref=e125]: Test todo
+              - img [ref=e127]
+            - listitem [ref=e131] [cursor=pointer]:
+              - button "Mark complete" [ref=e132]
+              - generic [ref=e134]: Test todo
+              - img [ref=e136]
+            - listitem [ref=e140] [cursor=pointer]:
+              - button "Mark complete" [ref=e141]
+              - generic [ref=e143]: Test todo
+              - img [ref=e145]
+            - listitem [ref=e149] [cursor=pointer]:
+              - button "Mark complete" [ref=e150]
+              - generic [ref=e151]:
+                - generic [ref=e152]: Updated title
+                - paragraph [ref=e153]: A new description
+              - img [ref=e155]
+            - listitem [ref=e159] [cursor=pointer]:
+              - button "Mark complete" [ref=e160]
+              - generic [ref=e162]: Deadline todo
+              - generic [ref=e164]: Dec 25
+              - img [ref=e166]
+            - listitem [ref=e170] [cursor=pointer]:
+              - button "Mark complete" [ref=e171]
+              - generic [ref=e173]: Invalid toggle
+              - img [ref=e175]
+            - listitem [ref=e179] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e180]:
+                - img [ref=e181]
+              - generic [ref=e184]: Hej
+              - generic [ref=e186]: Done
+              - img [ref=e188]
+            - listitem [ref=e192] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e193]:
+                - img [ref=e194]
+              - generic [ref=e197]: Hej
+              - generic [ref=e199]: Done
+              - img [ref=e201]
+            - listitem [ref=e205] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e206]:
+                - img [ref=e207]
+              - generic [ref=e210]: Another task
+              - generic [ref=e212]: Done
+              - img [ref=e214]
+            - listitem [ref=e218] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e219]:
+                - img [ref=e220]
+              - generic [ref=e223]: A todo
+              - generic [ref=e225]: Done
+              - img [ref=e227]
+            - listitem [ref=e231] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e232]:
+                - img [ref=e233]
+              - generic [ref=e236]: Another too
+              - generic [ref=e238]: Done
+              - img [ref=e240]
+            - listitem [ref=e244] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e245]:
+                - img [ref=e246]
+              - generic [ref=e249]: Toggle me
+              - generic [ref=e251]: Done
+              - img [ref=e253]
+            - listitem [ref=e257] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e258]:
+                - img [ref=e259]
+              - generic [ref=e262]: JhklbkgvjcfhxdgdszfdxfchghjvbJhklbkgvjcfhxdgdszfdxfchghjvbJhklbkgvjcfhxdgdszfdxfchghjvbJhklbkgvjcfhxdgdszfdxfchghjvbJhklbkgvjcfhxdgdszfdxfchghjvbJhklbkgvjcfhxdgdszfdxfchghjvbJhklbkgvjcfhxdgdszfdxfchghjvbJhklbkgvjcfhxdgdszfdxfchghjvbJhklbkgvjcfhxdgdszfdxfchghjvbJhklbkgvjcfhxdgdszfdxfchghjvb
+              - generic [ref=e264]: Done
+              - img [ref=e266]
+            - listitem [ref=e270] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e271]:
+                - img [ref=e272]
+              - generic [ref=e275]: Toggle me
+              - generic [ref=e277]: Done
+              - img [ref=e279]
+            - listitem [ref=e283] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e284]:
+                - img [ref=e285]
+              - generic [ref=e288]: Toggle me
+              - generic [ref=e290]: Done
+              - img [ref=e292]
+            - listitem [ref=e296] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e297]:
+                - img [ref=e298]
+              - generic [ref=e301]: Toggle me
+              - generic [ref=e303]: Done
+              - img [ref=e305]
+            - listitem [ref=e309] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e310]:
+                - img [ref=e311]
+              - generic [ref=e314]: Toggle me
+              - generic [ref=e316]: Done
+              - img [ref=e318]
+            - listitem [ref=e322] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e323]:
+                - img [ref=e324]
+              - generic [ref=e327]: Toggle me
+              - generic [ref=e329]: Done
+              - img [ref=e331]
+            - listitem [ref=e335] [cursor=pointer]:
+              - button "Mark incomplete" [ref=e336]:
+                - img [ref=e337]
+              - generic [ref=e340]: Toggle me
+              - generic [ref=e342]: Done
+              - img [ref=e344]
+```

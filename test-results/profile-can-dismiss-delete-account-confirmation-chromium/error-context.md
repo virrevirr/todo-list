@@ -19,15 +19,23 @@
           - generic [ref=e15]: Email
           - textbox "Email" [ref=e16]:
             - /placeholder: you@example.com
+            - text: vira.oetterli@gmail.com
         - generic [ref=e17]:
           - generic [ref=e18]: Password
           - textbox "Password" [ref=e19]:
             - /placeholder: Your password
+            - text: hej1234
         - button "Log in" [ref=e20]
         - paragraph [ref=e21]:
           - text: Don't have an account?
           - link "Sign up" [ref=e22] [cursor=pointer]:
             - /url: /signup
   - button "Open Next.js Dev Tools" [ref=e28] [cursor=pointer]:
-    - img [ref=e29]
+    - generic [ref=e31]:
+      - text: Compiling
+      - generic [ref=e32]:
+        - generic [ref=e33]: .
+        - generic [ref=e34]: .
+        - generic [ref=e35]: .
+  - alert [ref=e36]
 ```

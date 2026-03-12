@@ -43,3 +43,37 @@ test('can update first and last name', async ({ page }) => {
 
   await expect(page.getByText('Saved')).toBeVisible({ timeout: 5000 })
 })
+
+test('profile page displays user initials in avatar', async ({ page }) => {
+  await page.goto('/profile')
+  // The avatar circle should be visible at the top of the profile card
+  const avatar = page.locator('.bg-coral').first()
+  await expect(avatar).toBeVisible()
+})
+
+test('delete account shows confirmation dialog', async ({ page }) => {
+  await page.goto('/profile')
+
+  await page.getByRole('button', { name: /delete account/i }).click()
+  await expect(page.getByText(/permanently delete/i)).toBeVisible()
+  await expect(page.getByRole('button', { name: /yes, delete/i })).toBeVisible()
+})
+
+test('can dismiss delete account confirmation', async ({ page }) => {
+  await page.goto('/profile')
+
+  await page.getByRole('button', { name: /delete account/i }).click()
+  await expect(page.getByText(/permanently delete/i)).toBeVisible()
+
+  // Click Cancel to dismiss
+  await page.getByRole('button', { name: /^cancel$/i }).click()
+  await expect(page.getByText(/permanently delete/i)).not.toBeVisible()
+
+  // The "Delete account" link should reappear
+  await expect(page.getByRole('button', { name: /delete account/i })).toBeVisible()
+})
+
+test('profile page shows logout button', async ({ page }) => {
+  await page.goto('/profile')
+  await expect(page.getByRole('button', { name: /log out/i })).toBeVisible()
+})
