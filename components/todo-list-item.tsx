@@ -51,7 +51,8 @@ export default function TodoListItem({ todo, onToggle, onSelect }: Props) {
           </svg>
         )}
       </button>
-
+  
+      {/* Title + description — stays flex-1 so it has room */}
       <div className="flex-1 min-w-0 flex flex-col gap-0.5">
         <span
           className={`text-base font-medium ${todo.completed ? 'line-through text-zinc-400' : 'text-zinc-700'}`}
@@ -67,23 +68,25 @@ export default function TodoListItem({ todo, onToggle, onSelect }: Props) {
           </p>
         )}
       </div>
-
-      {todo.completed && (
-        <span className="text-sm font-medium text-turquoise bg-turquoise/10 px-3 py-1 rounded-full shrink-0">
-          Done
-        </span>
-      )}
-
-      {deadlineLabel && (
-        <span
-          className={`text-sm font-medium px-3 py-1 rounded-full shrink-0 ${
-            overdue ? 'text-coral bg-coral/10' : 'text-zinc-500 bg-zinc-100'
-          }`}
-        >
-          {deadlineLabel}
-        </span>
-      )}
-
+  
+      {/* Tags container: vertical on mobile, horizontal from sm+ */}
+      <div className="flex flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2 shrink-0">
+        {todo.completed && (
+          <span className="text-sm font-medium text-turquoise bg-turquoise/10 px-3 py-1 rounded-full">
+            Done
+          </span>
+        )}
+        {deadlineLabel && (
+          <span
+            className={`text-sm font-medium px-3 py-1 rounded-full ${
+              overdue ? 'text-coral bg-coral/10' : 'text-zinc-500 bg-zinc-100'
+            }`}
+          >
+            {deadlineLabel}
+          </span>
+        )}
+      </div>
+  
       <span
         className="shrink-0 text-zinc-300 group-hover:text-zinc-500 transition-colors"
         aria-hidden
