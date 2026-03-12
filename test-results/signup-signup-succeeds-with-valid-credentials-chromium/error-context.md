@@ -1,7 +1,7 @@
 # Page snapshot
 
 ```yaml
-- generic [active] [ref=e1]:
+- generic [ref=e1]:
   - generic [ref=e2]:
     - banner [ref=e3]:
       - link "Back to home" [ref=e5] [cursor=pointer]:
@@ -17,7 +17,7 @@
       - generic [ref=e13]:
         - generic [ref=e14]:
           - generic [ref=e15]: First name
-          - textbox "First name" [ref=e16]:
+          - textbox "First name" [active] [ref=e16]:
             - /placeholder: Astrid
         - generic [ref=e17]:
           - generic [ref=e18]: Last name
@@ -27,10 +27,12 @@
           - generic [ref=e21]: Email
           - textbox "Email" [ref=e22]:
             - /placeholder: you@example.com
+            - text: test+1773313812012@example.com
         - generic [ref=e23]:
           - generic [ref=e24]: Password
           - textbox "Password" [ref=e25]:
             - /placeholder: Min. 6 characters
+            - text: testpassword123
         - button "Create account" [ref=e26]
         - paragraph [ref=e27]:
           - text: Already have an account?
@@ -38,4 +40,5 @@
             - /url: /login
   - button "Open Next.js Dev Tools" [ref=e34] [cursor=pointer]:
     - img [ref=e35]
+  - alert [ref=e38]
 ```
